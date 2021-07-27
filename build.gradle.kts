@@ -8,7 +8,7 @@ buildscript {
     }
 }
 
-group = "com.zimolab"
+group = "com.zimolab.jsobject"
 version = "1.0-SNAPSHOT"
 
 repositories {

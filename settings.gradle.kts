@@ -15,3 +15,4 @@ pluginManagement {
 rootProject.name = "MonacoEditorFx2"
 include("jsobject-processor")
 include("core-library")
+include("api-demo")
