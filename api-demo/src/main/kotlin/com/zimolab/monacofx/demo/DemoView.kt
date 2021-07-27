@@ -5,9 +5,7 @@ import com.zimolab.monacofx.jseditor.IActionDescriptor
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.layout.VBox
-import netscape.javascript.JSObject
 import tornadofx.*
-import java.awt.event.KeyEvent
 import java.util.*
 
 class DemoView : View("MonacoEditorFx Demo") {
