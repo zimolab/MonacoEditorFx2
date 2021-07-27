@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+         <children>
+            <Label fx:id="labelLoadState" text="LoadState:" />
+            <Label fx:id="labelReady" text="Ready：" />
+            <Button fx:id="buttonReload" mnemonicParsing="false" onAction="#onButtonReloadAction" text="Reload" />
+            <Button fx:id="buttonTest" mnemonicParsing="false" onAction="#onButtonTestAction" text="Languages" />
+            <Button fx:id="buttonAddAction" mnemonicParsing="false" onAction="#onButtonAddActionAction" text="Add Action" />
+            <Button fx:id="buttonRemoveAction" mnemonicParsing="false" onAction="#onButtonRemoveActionAction" text="Remove Action" />
+            <Button fx:id="buttonTest1" mnemonicParsing="false" onAction="#onButtonTest1Action" text="Test" />
+         </children>
+      </HBox>
+      <Label fx:id="labelError" text="InternalError:" />
+   </children>
+</VBox>
