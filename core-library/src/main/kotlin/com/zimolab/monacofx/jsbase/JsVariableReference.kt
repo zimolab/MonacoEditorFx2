@@ -1,7 +1,7 @@
 package com.zimolab.monacofx.jsbase
 
 
-import com.zimolab.monacofx.jseditor.Globals.JS_EDITOR_NAMESPACE
+import com.zimolab.monacofx.monaco.Globals.JS_EDITOR_NAMESPACE
 import javafx.scene.web.WebEngine
 
 // 相当于在java层创建并持有的一个原生JS对象的引用

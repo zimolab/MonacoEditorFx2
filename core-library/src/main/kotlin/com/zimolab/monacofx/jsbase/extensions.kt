@@ -1,6 +1,6 @@
 package com.zimolab.monacofx.jsbase
 
-import com.zimolab.monacofx.jseditor.Globals.JS_UNDEFINED
+import com.zimolab.monacofx.monaco.Globals.JS_UNDEFINED
 import javafx.scene.web.WebEngine
 import netscape.javascript.JSException
 import netscape.javascript.JSObject

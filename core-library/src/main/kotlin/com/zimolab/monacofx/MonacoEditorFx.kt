@@ -1,16 +1,16 @@
 package com.zimolab.monacofx
 
-import com.zimolab.monacofx.jseditor.Globals.JS_CHECK_INTERVAL
-import com.zimolab.monacofx.jseditor.Globals.DEFAULT_LOAD_TIMEOUT
-import com.zimolab.monacofx.jseditor.Globals.DEFAULT_MONACO_EDITOR_INDEX
-import com.zimolab.monacofx.jseditor.Globals.ILLEGAL_JS_ID_EXCEPTION
-import com.zimolab.monacofx.jseditor.Globals.JS_EXCEPTION
-import com.zimolab.monacofx.jseditor.Globals.JS_GLOBAL_OBJECT_ID
-import com.zimolab.monacofx.jseditor.Globals.JS_HOST_ENV_READY_EVENT
-import com.zimolab.monacofx.jseditor.MonacoEditor
-import com.zimolab.monacofx.jseditor.MonacoEditor.Companion.JS_EDITOR_ID
-import com.zimolab.monacofx.jseditor.Globals.JS_UNDEFINED
-import com.zimolab.monacofx.jseditor.options.IStandaloneEditorConstructionOptions
+import com.zimolab.monacofx.monaco.Globals.JS_CHECK_INTERVAL
+import com.zimolab.monacofx.monaco.Globals.DEFAULT_LOAD_TIMEOUT
+import com.zimolab.monacofx.monaco.Globals.DEFAULT_MONACO_EDITOR_INDEX
+import com.zimolab.monacofx.monaco.Globals.ILLEGAL_JS_ID_EXCEPTION
+import com.zimolab.monacofx.monaco.Globals.JS_EXCEPTION
+import com.zimolab.monacofx.monaco.Globals.JS_GLOBAL_OBJECT_ID
+import com.zimolab.monacofx.monaco.Globals.JS_HOST_ENV_READY_EVENT
+import com.zimolab.monacofx.monaco.editor.MonacoEditor
+import com.zimolab.monacofx.monaco.editor.MonacoEditor.Companion.JS_EDITOR_ID
+import com.zimolab.monacofx.monaco.Globals.JS_UNDEFINED
+import com.zimolab.monacofx.monaco.editor.IStandaloneEditorConstructionOptions
 import com.zimolab.monacofx.util.Logger
 import com.zimolab.monacofx.jsbase.*
 import javafx.beans.property.ReadOnlyBooleanProperty

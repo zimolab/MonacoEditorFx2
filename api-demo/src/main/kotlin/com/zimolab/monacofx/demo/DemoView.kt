@@ -1,7 +1,7 @@
 package com.zimolab.monacofx.demo
 
 import com.zimolab.monacofx.MonacoEditorFx
-import com.zimolab.monacofx.jseditor.IActionDescriptor
+import com.zimolab.monacofx.monaco.editor.IActionDescriptor
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.layout.VBox

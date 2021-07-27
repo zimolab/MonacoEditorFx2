@@ -1,6 +1,6 @@
 package com.zimolab.monacofx.jsbase
 
-import com.zimolab.monacofx.jseditor.Globals.JS_EDITOR_NAMESPACE
+import com.zimolab.monacofx.monaco.Globals.JS_EDITOR_NAMESPACE
 import netscape.javascript.JSObject
 
 interface JsObjectInstance {
