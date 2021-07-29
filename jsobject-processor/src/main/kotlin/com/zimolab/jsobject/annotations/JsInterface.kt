@@ -1,5 +1,7 @@
 package com.zimolab.jsobject.annotations
 
+import java.lang.annotation.ElementType
+
 @Target(AnnotationTarget.CLASS)
 annotation class JsInterface(
     val outputClassName: String = "",

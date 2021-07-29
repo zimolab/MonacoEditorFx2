@@ -2,8 +2,8 @@ plugins {
     java
     `java-library`
     id("com.google.devtools.ksp")
-
     kotlin("jvm")
+    //kotlin("kapt")
 }
 
 group = "com.zimolab.monacofx"
@@ -23,6 +23,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     implementation(project(":jsobject-processor"))
     ksp(project(":jsobject-processor"))
+    //kapt(project(":jsobject-processor"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.5.1")
     implementation("no.tornado:tornadofx-controlsfx:0.1")

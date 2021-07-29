@@ -1,12 +1,13 @@
 package com.zimolab.monacofx.monaco
 
+import netscape.javascript.JSObject
 
-abstract class Position(
-    val column: Int? = null,
-    val lineNumber: Int? = null
-) {
-    abstract fun with(newLineNumber: Int, newColumn: Int): Position
-    abstract fun delta(deltaLineNumber: Int, deltaColumn: Int): Position
-    abstract fun isBefore(other: Position): Boolean
-    abstract fun isBeforeOrEqual(other: Position): Boolean
+
+interface Position {
+    val column: Int?
+    val lineNumber: Int?
+    fun with(newLineNumber: Int, newColumn: Int): JSObject
+    fun delta(deltaLineNumber: Int, deltaColumn: Int): JSObject
+    fun isBefore(other: JSObject): Boolean
+    fun isBeforeOrEqual(other: JSObject): Boolean
 }

@@ -224,24 +224,18 @@ object JsClassFileGenerator : FutureCallback<Unit> {
                 val fieldName = field.fieldName
                 val memberName = field.memberName
                 val fieldType = field.ksType.asTypeName()
-                val useInitializer = field.useInitializer
                 val mutable = field.mutable
                 val ignoreUndefined = field.ignoreUndefined
-                val initializer = field.initializer(field.ksType.qualifiedName)
 
 
                 val builder = PropertySpec.builder(fieldName, fieldType)
                     .mutable(mutable)
                     .addModifiers(KModifier.OVERRIDE)
 
-                if (useInitializer)
-                    builder.initializer(initializer?.toString() ?: "null")
 
                 if (mutable) {
                     // 对于var属性需要生成相应的setter
-                    var code = CODE_FIELD_SETTER
-                    if (useInitializer)
-                        code = "$code\n$SETTER_BACK_FIELD = $SETTER_ARG_VALUE\n"
+                    val code = CODE_FIELD_SETTER
                     val setter = FunSpec.setterBuilder()
                         .addParameter(SETTER_ARG_VALUE, fieldType)
                         .addCode(code, memberName)
@@ -336,19 +330,17 @@ object JsClassFileGenerator : FutureCallback<Unit> {
         initialized = true
     }
 
-    fun submit(annotatedJsInterface: AnnotatedJsInterface): ListenableFuture<Unit> {
+    fun submit(annotatedJsInterface: AnnotatedJsInterface): ListenableFuture<Unit>? {
         if (!initialized)
             throw RuntimeException("JsClassFileGenerator is not initialized")
-        val future = service.submit(
-            FileGeneratorTask(
-                annotatedJsInterface,
-                codeGenerator,
-                logger,
-                options
-            )
-        )
-        Futures.addCallback(future, this, service)
-        return future
+
+        FileGeneratorTask(
+            annotatedJsInterface,
+            codeGenerator,
+            logger,
+            options
+        ).call()
+        return null
     }
 
     fun cancel(future: ListenableFuture<Unit>) {

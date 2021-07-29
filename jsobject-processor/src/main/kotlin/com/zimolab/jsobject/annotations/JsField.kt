@@ -6,17 +6,20 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asTypeName
 import com.zimolab.jsobject.asKSType
 import netscape.javascript.JSObject
+import java.lang.annotation.RetentionPolicy
 import kotlin.reflect.KClass
 
 @Target(AnnotationTarget.PROPERTY)
 annotation class JsField(
     val member: String = "",
     val skip: Boolean = SKIP_FIELD,
+    val keepPropertyCase: Boolean = KEEP_PROPERTY_CASE,
     val useInitializer: Boolean = USE_INITIALIZER,
     val useNullInitializer: Boolean = INIT_NULLABLE_FIELD_WITH_NULL,
     val ignoreUndefined: Boolean = IGNORE_UNDEFINED
 ) {
     companion object {
+        const val KEEP_PROPERTY_CASE = false
         const val SKIP_FIELD = false
         const val USE_INITIALIZER = false
         const val INIT_NULLABLE_FIELD_WITH_NULL = true
@@ -57,3 +60,15 @@ annotation class JsField(
         )
     }
 }
+
+
+/**
+ * 在处理接口或者抽象类时，诸如setXXX(a: Type)/getXXX(): Type之类的函数可能会被误解为是一个属性，因此需要通过一些注解明确告诉处理器，
+ * 不要将其理解为属性
+ */
+
+@Target(AnnotationTarget.FUNCTION)
+annotation class NotSetter
+
+@Target(AnnotationTarget.FUNCTION)
+annotation class NotGetter

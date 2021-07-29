@@ -1,5 +1,7 @@
 package com.zimolab.monacofx.monaco.editor
 
+import com.zimolab.jsobject.annotations.JsInterface
+
 object EditorEvents {
     const val onContextMenu: Int = 0
     const val onDidAttemptReadOnlyEdit: Int = 1
