@@ -8,7 +8,7 @@ buildscript {
     }
 }
 
-group = "com.zimolab.jsobject"
+group = "com.zimolab.monacofx"
 version = "1.0-SNAPSHOT"
 
 repositories {

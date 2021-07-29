@@ -23,7 +23,6 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     implementation(project(":jsobject-processor"))
     ksp(project(":jsobject-processor"))
-    //kapt(project(":jsobject-processor"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.5.1")
     implementation("no.tornado:tornadofx-controlsfx:0.1")
@@ -35,6 +34,9 @@ dependencies {
 sourceSets.main {
     java.srcDir("build/generated/ksp/main/kotlin/")
     java.srcDir("build/generated/ksp/main/java/")
+}
+
+ksp {
 }
 
 tasks.getByName<Test>("test") {

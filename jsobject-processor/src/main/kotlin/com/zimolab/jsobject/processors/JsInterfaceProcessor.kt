@@ -3,7 +3,10 @@ package com.zimolab.jsobject.processors
 import com.google.devtools.ksp.getDeclaredFunctions
 import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.processing.*
-import com.google.devtools.ksp.symbol.*
+import com.google.devtools.ksp.symbol.ClassKind
+import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSVisitorVoid
 import com.google.devtools.ksp.validate
 import com.zimolab.jsobject.annotations.JsInterface
 import com.zimolab.jsobject.findAnnotations
@@ -16,6 +19,10 @@ class JsInterfaceProcessor(
     val logger: KSPLogger,
     val options: Map<String, String>
 ) : SymbolProcessor {
+    companion object {
+        const val OPTION_NAME_OUTCLASS_PREFIX = "output_class_prefix"
+        const val OPTION_NAME_OUTCLASS_SUFFIX = "output_class_suffix"
+    }
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation(checkNotNull(JsInterface::class.qualifiedName))
@@ -23,30 +30,22 @@ class JsInterfaceProcessor(
 
         if (!symbols.iterator().hasNext()) return emptyList()
 
-        JsClassFileGenerator.initialize(codeGenerator, logger, options)
-        JsClassFileGenerator.onTaskDone { success, exception ->
-            if (success) {
-                logger.info("class file generated", )
-            }
-            if (exception != null) {
-                throw exception
-            }
-        }
+        ClassFileGenerator.initialize(codeGenerator, logger, options)
 
         symbols.filter { it.validate() }.forEach { ksAnnotated ->
             if (ksAnnotated.classKind != ClassKind.INTERFACE)
                 throw AnnotationProcessingError("@${JsInterface::class.simpleName} can only be applied on interfaces.")
-            ksAnnotated.accept(JsInterfaceVisitor(resolver, codeGenerator, logger, options), Unit)
+            ksAnnotated.accept(JsInterfaceVisitor(), Unit)
         }
 
         return symbols.filter { !it.validate() }.toList()
 
     }
 
-    inner class JsInterfaceVisitor(private val resolver: Resolver,codeGenerator: CodeGenerator, private val logger: KSPLogger, private val options: Map<String, String>) : KSVisitorVoid() {
+    inner class JsInterfaceVisitor : KSVisitorVoid() {
         lateinit var interfaceName: String
         lateinit var packageName: String
-        lateinit var annotatedJsInterface: AnnotatedJsInterface
+        lateinit var resolvedJsInterface: ResolvedJsInterface
 
         override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: Unit) {
             val qualifiedName = classDeclaration.qualifiedNameStr
@@ -56,36 +55,20 @@ class JsInterfaceProcessor(
 
             val interfaceAnnotation = classDeclaration.findAnnotations(JsInterface::class).firstOrNull()
                 ?: throw AnnotationProcessingError("interface '$interfaceName' has no @JsFunction annotation.")
-            annotatedJsInterface =
-                AnnotatedJsInterface(packageName, interfaceName, classDeclaration, interfaceAnnotation)
+            resolvedJsInterface =
+                ResolvedJsInterface(packageName, interfaceName, classDeclaration, interfaceAnnotation)
             // 处理接口中定义的属性（字段）
             classDeclaration.getDeclaredProperties().asSequence().forEach {
-                annotatedJsInterface.addField(it)
+                resolvedJsInterface.addField(it)
             }
             // 处理接口中定义的函数
             classDeclaration.getDeclaredFunctions().asSequence().forEach {
-                annotatedJsInterface.addJsFunction(it)
+                resolvedJsInterface.addJsFunction(it)
             }
-            // 将annotatedJsInterface对象发送到后台IO线程，生成文件
-            JsClassFileGenerator.submit(annotatedJsInterface)
+            ClassFileGenerator.submit(resolvedJsInterface)
         }
     }
 
-    /**
-     * Called by Kotlin Symbol Processing to finalize the processing of a compilation.
-     */
-    override fun finish() {
-        super.finish()
-        JsClassFileGenerator.shutdownNow()
-    }
-
-    /**
-     * Called by Kotlin Symbol Processing to handle errors after a round of processing.
-     */
-    override fun onError() {
-        super.onError()
-        JsClassFileGenerator.shutdownNow()
-    }
 }
 
 class JsInterfaceProcessorProvider : SymbolProcessorProvider {

@@ -25,9 +25,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.21")
     // kotlin代码生成
     implementation("com.squareup:kotlinpoet:1.9.0")
+
     implementation("com.google.guava:guava:30.1.1-jre")
     implementation("com.google.auto.service:auto-service:1.0")
-    //kapt("com.google.auto.service:auto-service:1.0")
 
 }
 

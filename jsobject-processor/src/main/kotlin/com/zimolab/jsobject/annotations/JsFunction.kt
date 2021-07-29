@@ -5,7 +5,7 @@ import com.squareup.kotlinpoet.asTypeName
 import netscape.javascript.JSObject
 
 @Target(AnnotationTarget.FUNCTION)
-annotation class JsFunction(val nameInJs: String = "", val exceptionOnUndefined: Boolean = EXCEPTION_ON_UNDEFINED) {
+annotation class JsFunction(val jsFunctionName: String = "", val exceptionOnUndefined: Boolean = EXCEPTION_ON_UNDEFINED) {
     companion object {
         const val EXCEPTION_ON_UNDEFINED = true
         val SupportedArgumentTypes = setOf<String>(

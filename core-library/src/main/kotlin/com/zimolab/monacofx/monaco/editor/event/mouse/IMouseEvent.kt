@@ -1,12 +1,13 @@
 package com.zimolab.monacofx.monaco.editor.event.mouse
 
+import com.zimolab.jsobject.annotations.JsField
 import com.zimolab.jsobject.annotations.JsInterface
-import com.zimolab.jsobject.annotations.NotSetter
 import netscape.javascript.JSObject
 
 @JsInterface(ignoreUnsupportedTypes = true)
 interface IMouseEvent {
-    val browserEvent: JSObject?
+    @JsField(ignoreUndefined = true)
+    var browserEvent: JSObject
     val leftButton: Boolean
     val middleButton: Boolean
     val rightButton: Boolean

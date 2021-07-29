@@ -14,7 +14,7 @@ import kotlin.collections.ArrayList
  * @property function KSFunctionDeclaration 函数源对象
  * @property annotation KSAnnotation 注解源对象
  * @property functionName String 函数名
- * @property memberName String 在Js中的函数名
+ * @property jsFunctionName String 在Js中的函数名
  * @property qualifiedName String 函数的全称
  * @property returnType KSType 函数返回值
  * @property exceptionOnUndefined Boolean 返回undefined时是否抛出异常
@@ -36,8 +36,8 @@ class ResolvedJsFunction(
         function.simpleNameStr
     }
 
-    val memberName: String by lazy {
-        annotation.findArgument(JsFunction::nameInJs.name, functionName)
+    val jsFunctionName: String by lazy {
+        annotation.findArgument(JsFunction::jsFunctionName.name, functionName)
     }
 
     val qualifiedName: String by lazy {

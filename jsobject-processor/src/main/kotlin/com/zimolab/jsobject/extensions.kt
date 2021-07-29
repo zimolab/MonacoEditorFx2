@@ -74,7 +74,7 @@ internal fun KSType.asTypeName(): TypeName {
         val declarationName: TypeVariableName = (this.declaration as KSTypeParameter).asTypeVariableName()
         if (this.isMarkedNullable) declarationName.copy(nullable = true) else declarationName
     } else {
-        throw RuntimeException("Failed to create TypeName for ${this}")
+        throw RuntimeException("Failed to create TypeName for $this")
     }
 }
 
