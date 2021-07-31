@@ -60,6 +60,10 @@ class ResolvedJsInterface(
         interfaceAnnotation.findArgument(JsInterface::ignoreUnsupportedTypes.name, JsInterface.IGNORE_UNSUPPORTED_TYPES)
     }
 
+    val generateNewInstanceFunction: Boolean by lazy {
+        interfaceAnnotation.findArgument(JsInterface::newFunction.name, JsInterface.NEW_INSTANCE_FUNCTION)
+    }
+
     fun setOutputClassNameRule(prefix: String, suffix: String) {
         if (prefix == "" && suffix == "")
             return

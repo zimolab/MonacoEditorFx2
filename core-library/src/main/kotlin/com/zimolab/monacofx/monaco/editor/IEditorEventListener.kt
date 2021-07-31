@@ -1,7 +1,7 @@
 package com.zimolab.monacofx.monaco.editor
 
 interface IEditorEventListener {
-    fun listen(event: Int, callback: (e: Any?) -> Any?)
-    fun unlisten(event: Int)
-    fun isListened(event: Int): Boolean
+    fun listen(eventId: Int, callback: (eventId: Int, e: Any?) -> Any?)
+    fun unlisten(eventId: Int)
+    fun isListened(eventId: Int): Boolean
 }

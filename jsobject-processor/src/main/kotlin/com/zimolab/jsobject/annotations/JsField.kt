@@ -29,12 +29,14 @@ annotation class JsField(
             Double::class.qualifiedName!!,
             String::class.qualifiedName!!,
             JSObject::class.qualifiedName!!,
+            Any::class.qualifiedName!!,
 
             Boolean::class.asTypeName().copy(nullable = true).toString(),
             String::class.asTypeName().copy(nullable = true).toString(),
             Int::class.asTypeName().copy(nullable = true).toString(),
             Double::class.asTypeName().copy(nullable = true).toString(),
-            JSObject::class.asTypeName().copy(nullable = true).toString()
+            JSObject::class.asTypeName().copy(nullable = true).toString(),
+            Any::class.asTypeName().copy(nullable = true).toString()
         )
 
         val DefaultInitializers = mapOf<String, String>(
@@ -50,7 +52,8 @@ annotation class JsField(
             String::class.qualifiedName!! to DEFAULT_STRING_INITIALIZER,
             String::class.asTypeName().copy(nullable = true).toString() to DEFAULT_STRING_INITIALIZER,
 
-            JSObject::class.asTypeName().copy(nullable = true).toString() to "null"
+            JSObject::class.asTypeName().copy(nullable = true).toString() to "null",
+            Any::class.asTypeName().copy(nullable = true).toString() to "null"
         )
     }
 }

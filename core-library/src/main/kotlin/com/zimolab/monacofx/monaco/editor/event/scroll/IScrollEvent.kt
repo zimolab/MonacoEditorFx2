@@ -1,5 +1,8 @@
-package com.zimolab.monacofx.monaco
+package com.zimolab.monacofx.monaco.editor.event.scroll
 
+import com.zimolab.jsobject.annotations.JsInterface
+
+@JsInterface
 interface IScrollEvent {
     val scrollTop: Int
     val scrollLeft: Int

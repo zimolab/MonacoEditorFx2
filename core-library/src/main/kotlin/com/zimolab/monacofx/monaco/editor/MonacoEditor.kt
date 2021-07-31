@@ -11,8 +11,21 @@ import com.zimolab.monacofx.monaco.Globals.JS_EDITOR_NAMESPACE
 import com.zimolab.monacofx.monaco.Globals.JS_EXCEPTION
 import com.zimolab.monacofx.monaco.languages.ILanguageExtensionPoint
 import com.zimolab.monacofx.MonacoEditorFx
+import com.zimolab.monacofx.monaco.editor.event.cursor.CursorPositionChangedEvent
+import com.zimolab.monacofx.monaco.editor.event.cursor.CursorSelectionChangedEvent
+import com.zimolab.monacofx.monaco.editor.event.keyboard.KeyBoardEvent
+import com.zimolab.monacofx.monaco.editor.event.miscellaneous.ConfigurationChangedEvent
+import com.zimolab.monacofx.monaco.editor.event.miscellaneous.ContentSizeChangedEvent
+import com.zimolab.monacofx.monaco.editor.event.miscellaneous.EditorLayoutInfo
+import com.zimolab.monacofx.monaco.editor.event.miscellaneous.PasteEvent
+import com.zimolab.monacofx.monaco.editor.event.model.ModelContentChangedEvent
+import com.zimolab.monacofx.monaco.editor.event.model.ModelLanguageChangedEvent
+import com.zimolab.monacofx.monaco.editor.event.model.ModelOptionsChangedEvent
+import com.zimolab.monacofx.monaco.editor.event.mouse.EditorMouseEvent
+import com.zimolab.monacofx.monaco.editor.event.scroll.ScrollEvent
 import javafx.scene.web.WebEngine
 import netscape.javascript.JSObject
+import kotlin.reflect.KClass
 
 class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsBridge, IEditorEventListener {
     companion object {
@@ -21,6 +34,10 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         const val JS_EDITOR_ID = "${JS_EDITOR_NAMESPACE}.editor"
         const val JS_INVOKE_EXCEPTION = "JSInvokeException"
         val ERROR_UNEXPECTED_RETURN_VALUE = Throwable("JS invoke did not return a value as expected")
+
+        // 事件相关常量
+        const val MOUSE_BUTTON_UP = 0
+        const val MOUSE_BUTTON_DOWN = 1
     }
 
     object JSCODE {
@@ -48,7 +65,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
     var jsEditor: JSObject? = null
     val addedActions: MutableMap<String, IActionDescriptor> by lazy { mutableMapOf() }
     val addedCommands: MutableMap<String, ICommandHandler> by lazy { mutableMapOf() }
-    private val editorEvents: MutableMap<Int, (args: Any?)->Any?> by lazy {
+    private val editorEvents: MutableMap<Int, (eventId: Int, e: Any?)->Any?> by lazy {
         mutableMapOf()
     }
 
@@ -68,9 +85,9 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
             addedActions[actionId]?.onRun(actionId)
     }
 
-    fun onEditorEvent(event: Int, e: Any?) {
-        if (event in editorEvents)
-            editorEvents[event]?.invoke(e)
+    fun onEditorEvent(eventId: Int, e: Any?) {
+        if (eventId in editorEvents)
+            editorEvents[eventId]?.invoke(eventId, e)
     }
     /***********************************************************************/
 
@@ -485,18 +502,262 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
-    override fun listen(event: Int, callback: (args: Any?) -> Any?) {
-        if (event in editorEvents)
-            editorEvents.remove(event)
-        editorEvents[event] = callback
+    override fun listen(eventId: Int, callback: (eventId: Int, e: Any?) -> Any?) {
+        if (eventId in editorEvents)
+            editorEvents.remove(eventId)
+        editorEvents[eventId] = callback
     }
 
-    override fun unlisten(event: Int) {
-        if (event in editorEvents)
-            editorEvents.remove(event)
+    override fun unlisten(eventId: Int) {
+        if (eventId in editorEvents)
+            editorEvents.remove(eventId)
     }
 
-    override fun isListened(event: Int): Boolean {
-        return event in editorEvents
+    override fun isListened(eventId: Int): Boolean {
+        return eventId in editorEvents.keys
+    }
+
+    fun setOnMouseDownListener(listener: ((eventId: Int, event: EditorMouseEvent)->Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onMouseDown)
+            return
+        }
+
+        listen(EditorEvents.onMouseDown) { eventId: Int, e: Any? ->
+            if (e is JSObject) {
+                listener(eventId, EditorMouseEvent(e))
+            }
+        }
+    }
+
+    fun setOnMouseUpListener(listener: ((eventId: Int, event: EditorMouseEvent)->Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onMouseUp)
+            return
+        }
+
+        listen(EditorEvents.onMouseUp) { eventId: Int, e: Any? ->
+            if (e is JSObject) {
+                listener(eventId, EditorMouseEvent(e))
+            }
+        }
+    }
+
+    fun setOnMouseMoveListener(listener: ((eventId: Int, event: EditorMouseEvent)->Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onMouseMove)
+            return
+        }
+        listen(EditorEvents.onMouseMove) { eventId: Int, e: Any? ->
+            if (e is JSObject) {
+                listener(eventId, EditorMouseEvent(e))
+            }
+        }
+    }
+
+    fun setOnMouseLeaveListener(listener: ((eventId: Int, event: EditorMouseEvent)->Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onMouseLeave)
+            return
+        }
+        listen(EditorEvents.onMouseLeave) { eventId: Int, e: Any? ->
+            if (e is JSObject) {
+                listener(eventId, EditorMouseEvent(e))
+            }
+        }
+    }
+
+    fun setOnKeyUpListener(listener: ((eventId: Int, event: KeyBoardEvent)->Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onKeyUp)
+            return
+        }
+        listen(EditorEvents.onKeyUp) { eventId: Int, e: Any? ->
+            if (e is JSObject) {
+                listener(eventId, KeyBoardEvent(e))
+            }
+        }
+    }
+
+    fun setOnKeyDownListener(listener: ((eventId: Int, event: KeyBoardEvent)->Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onKeyDown)
+            return
+        }
+        listen(EditorEvents.onKeyDown) { eventId: Int, e: Any? ->
+            if (e is JSObject) {
+                listener(eventId, KeyBoardEvent(e))
+            }
+        }
+    }
+
+    fun setOnScrollEvent(listener: ((eventId: Int, event: ScrollEvent)->Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onDidScrollChange)
+            return
+        }
+        listen(EditorEvents.onDidScrollChange) { eventId: Int, e: Any? ->
+            if (e is JSObject) {
+                listener(eventId, ScrollEvent(e))
+            }
+        }
+    }
+
+    fun setOnPasteListener(listener: ((eventId: Int, event: PasteEvent)->Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onDidPaste)
+            return
+        }
+        listen(EditorEvents.onDidPaste) { eventId: Int, e: Any? ->
+            if (e is JSObject) {
+                listener(eventId, PasteEvent(e))
+            }
+        }
+    }
+
+    fun setLayoutChangeListener(listener: ((eventId: Int, event: EditorLayoutInfo)->Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onDidLayoutChange)
+            return
+        }
+        listen(EditorEvents.onDidLayoutChange) { eventId: Int, e: Any? ->
+            if (e is JSObject) {
+                listener(eventId, EditorLayoutInfo(e))
+            }
+        }
+    }
+
+    fun setOnGainFocusListener(listener: ((eventId: Int)->Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onDidFocusEditorWidget)
+            unlisten(EditorEvents.onDidFocusEditorText)
+            return
+        }
+        val callback = { eventId: Int, _: Any? ->
+            listener(eventId)
+        }
+        listen(EditorEvents.onDidFocusEditorText, callback)
+        listen(EditorEvents.onDidFocusEditorWidget, callback)
+    }
+
+    fun setOnLostFocusListener(listener: ((eventId: Int)->Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onDidBlurEditorText)
+            unlisten(EditorEvents.onDidBlurEditorWidget)
+            return
+        }
+        val callback = { eventId: Int, _: Any? ->
+            listener(eventId)
+        }
+        listen(EditorEvents.onDidBlurEditorText, callback)
+        listen(EditorEvents.onDidBlurEditorWidget, callback)
+    }
+
+    fun setOnContextMenuListener(listener: ((eventId: Int, event: EditorMouseEvent)->Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onContextMenu)
+            return
+        }
+        listen(EditorEvents.onContextMenu) { eventId: Int, e: Any? ->
+            if (e is JSObject) {
+                listener(eventId, EditorMouseEvent(e))
+            }
+        }
+    }
+
+    fun setOnAttemptReadyOnlyEditListener(listener: ((eventId: Int) -> Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onDidAttemptReadOnlyEdit)
+            return
+        }
+        listen(EditorEvents.onDidAttemptReadOnlyEdit) { eventId: Int, _: Any? ->
+            listener(eventId)
+        }
+    }
+
+    fun setOnChangeConfigurationListener(listener:( (eventId: Int, event: ConfigurationChangedEvent)->Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onDidChangeConfiguration)
+            return
+        }
+        listen(EditorEvents.onDidChangeConfiguration) { eventId: Int, e: Any? ->
+            if (e is JSObject)
+                listener(eventId, ConfigurationChangedEvent(e))
+        }
+    }
+
+    fun setOnChangeCursorPositionListener(listener:( (eventId: Int, event: CursorPositionChangedEvent)->Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onDidChangeCursorPosition)
+            return
+        }
+        listen(EditorEvents.onDidChangeCursorPosition) { eventId: Int, e: Any? ->
+            if (e is JSObject)
+                listener(eventId, CursorPositionChangedEvent(e))
+        }
+    }
+
+    fun setOnChangeCursorSelectionListener(listener:( (eventId: Int, event: CursorSelectionChangedEvent)->Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onDidChangeCursorSelection)
+            return
+        }
+        listen(EditorEvents.onDidChangeCursorSelection) { eventId: Int, e: Any? ->
+            if (e is JSObject)
+                listener(eventId, CursorSelectionChangedEvent(e))
+        }
+    }
+
+    fun setOnChangeModelContentListener(listener:( (eventId: Int, event: ModelContentChangedEvent)->Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onDidChangeModelContent)
+            return
+        }
+        listen(EditorEvents.onDidChangeModelContent) { eventId: Int, e: Any? ->
+            if (e is JSObject)
+                listener(eventId, ModelContentChangedEvent(e))
+        }
+    }
+
+    fun setOnChangeModelLanguageListener(listener:( (eventId: Int, event: ModelLanguageChangedEvent)->Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onDidChangeModelLanguage)
+            return
+        }
+        listen(EditorEvents.onDidChangeModelLanguage) { eventId: Int, e: Any? ->
+            if (e is JSObject)
+                listener(eventId, ModelLanguageChangedEvent(e))
+        }
+    }
+
+    fun setOnChangeModelOptionsListener(listener:( (eventId: Int, event: ModelOptionsChangedEvent)->Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onDidChangeModelOptions)
+            return
+        }
+        listen(EditorEvents.onDidChangeModelOptions) { eventId: Int, e: Any? ->
+            if (e is JSObject)
+                listener(eventId, ModelOptionsChangedEvent(e))
+        }
+    }
+
+    fun setOnContentSizeChangeListener(listener:( (eventId: Int, event: ContentSizeChangedEvent)->Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onDidContentSizeChange)
+            return
+        }
+        listen(EditorEvents.onDidContentSizeChange) { eventId: Int, e: Any? ->
+            if (e is JSObject)
+                listener(eventId, ContentSizeChangedEvent(e))
+        }
+    }
+    fun setOnDisposeListener(listener: ((eventId: Int)->Unit)?) {
+        if (listener == null) {
+            unlisten(EditorEvents.onDidDispose)
+            return
+        }
+        listen(EditorEvents.onDidDispose) { eventId: Int, _: Any? ->
+                listener(eventId)
+        }
     }
 }

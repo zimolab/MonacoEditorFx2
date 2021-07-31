@@ -3,7 +3,6 @@ plugins {
     `java-library`
     id("com.google.devtools.ksp")
     kotlin("jvm")
-    //kotlin("kapt")
 }
 
 group = "com.zimolab.monacofx"

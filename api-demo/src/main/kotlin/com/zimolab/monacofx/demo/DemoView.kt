@@ -30,14 +30,35 @@ class DemoView : View("MonacoEditorFx Demo") {
         monacoEditorFx.internalErrorProperty.addListener { observable, oldValue, newValue ->
             labelError.text = "InternalError: ${newValue?.first}"
         }
-//        monacoEditorFx.editor.listen(EditorEvents.onKeyDown) { e ->
-//            if (e != null && e != JS_UNDEFINED && e is JSObject) {
-//                val event: IKeyboardEvent? = IKeyboardEvent.fromJSObject(e)
-//                event?.let {
-//                    println(it.browserEvent?.timeStamp)
-//                }
-//            }
-//        }、
+
+//        monacoEditorFx.editor.setOnKeyUpListener { eventId, event ->
+//            println("${event.keyCode}, ${event.code}, ${event.ctrlKey}")
+//        }
+//        monacoEditorFx.editor.setOnScrollEvent { eventId, event ->
+//            println("${event.scrollLeft}, ${event.scrollTop}")
+//        }
+        monacoEditorFx.editor.setOnPasteListener { eventId, event ->
+            println("${event.mode}, ${event.range}")
+        }
+
+        monacoEditorFx.editor.setLayoutChangeListener { eventId, event ->
+            println("${event.height}, ${event.width}")
+        }
+
+        monacoEditorFx.editor.setOnGainFocusListener { eventId ->
+            println("${eventId} focused.")
+        }
+
+//        monacoEditorFx.editor.setOnChangeCursorPositionListener { eventId, e ->
+//            println("change cursor position: (${e.position.lineNumber}, ${e.position.column}) reason: ${e.reason} ${e.secondaryPositions}")
+//        }
+//        monacoEditorFx.editor.setOnChangeCursorSelectionListener { eventId, event ->
+//            println("ChangeCursorSelection: ${event.selection}")
+//        }
+//        monacoEditorFx.editor.setOnLostFocusListener {
+//            println("lost focus")
+//        }
+
         root.children.add(monacoEditorFx)
     }
 

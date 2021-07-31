@@ -1,9 +1,12 @@
 package com.zimolab.monacofx.monaco
 
+import com.zimolab.jsobject.annotations.JsInterface
+
+@JsInterface
 interface UriComponents {
-    var authority: String?
-    var fragment: String?
-    var path: String?
-    var query: String?
-    var scheme: String?
+    val authority: String?
+    val fragment: String?
+    val path: String?
+    val query: String?
+    val scheme: String?
 }

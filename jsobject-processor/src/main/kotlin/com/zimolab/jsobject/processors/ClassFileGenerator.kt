@@ -68,7 +68,6 @@ object ClassFileGenerator {
                     "Just inherit from it with your own implementation."
 
             const val PROP_NAME_TARGET_OBJECT = "targetObject"
-            const val PROP_NAME_WEBENGINE = "webEngine"
             const val FUNC_NAME_MEMBER_EXIST = "exists"
             const val FUNC_ARG_MEMBER_NAME = "name"
             const val FUNC_ARG_VARARGS = "args"
@@ -82,7 +81,7 @@ object ClassFileGenerator {
             const val CODE_FIELD_GETTER = "" +
                     "val·result·=·${PROP_NAME_TARGET_OBJECT}.getMember(%S)\n" +
                     "if(result·==·\"undefined\"·||·result·==·null)\n" +
-                    "····throw·RuntimeException(\"'%L'·is·not·exists·in·underlying·js·object\")\n" +
+                    "····throw·RuntimeException(\"'%L'·not·exists·in·underlying·js·object\")\n" +
                     "return·result·as·%T\n"
 
             const val CODE_NULLABLE_FILED_GETTER = "" +
@@ -102,7 +101,7 @@ object ClassFileGenerator {
                     "}\n" +
                     "if(c·==·null)\n" +
                     "····throw·InstantiationError(\"constructor·parameters·not·match\")\n" +
-                    "val·targetObject·=·${PROP_NAME_WEBENGINE}.executeScript(${FUNC_ARG_JSCODE})\n" +
+                    "val·targetObject·=·webEngine.executeScript(${FUNC_ARG_JSCODE})\n" +
                     "if(targetObject·==·\"undefined\"·||·targetObject·!is·JSObject)\n" +
                     "····return null\n" +
                     "return·c?.call(targetObject·as·JSObject,·webEngine,·*${FUNC_ARG_VARARGS})·as?·T\n"
@@ -200,7 +199,6 @@ object ClassFileGenerator {
         private fun createConstructor(classBuilder: TypeSpec.Builder) {
             val pConstructor = FunSpec.constructorBuilder()
                 .addParameter(PROP_NAME_TARGET_OBJECT, JSObject::class)
-                .addParameter(PROP_NAME_WEBENGINE, WebEngine::class)
                 .build()
 
             classBuilder.primaryConstructor(pConstructor)
@@ -209,30 +207,27 @@ object ClassFileGenerator {
                         .initializer(PROP_NAME_TARGET_OBJECT)
                         .build()
                 )
-                .addProperty(
-                    PropertySpec.builder(PROP_NAME_WEBENGINE, WebEngine::class)
-                        .initializer(PROP_NAME_WEBENGINE)
-                        .build()
-                )
         }
 
         private fun createStaticMembers(companionObjectBuilder: TypeSpec.Builder) {
-            // new函数
-            val functionNew = FunSpec.builder(STATIC_FUNC_NAME_NEW_INSTANCE)
-                .addModifiers(KModifier.INLINE) // inline fun new
-                .addTypeVariable(
-                    TypeVariableName(
-                        "T",
-                        bounds = arrayOf(resolvedJsInterface.ksType.asTypeName())
-                    ).copy(reified = true)
-                ) // <reified T:annotatedClass.typeElement>
-                .returns(TypeVariableName("T").copy(nullable = true)) // : T?
-                .addParameter(PROP_NAME_WEBENGINE, WebEngine::class)
-                .addParameter(FUNC_ARG_JSCODE, String::class)
-                .addParameter(FUNC_ARG_VARARGS, Any::class, KModifier.VARARG) // vararg args: Any
-                .addCode(CODE_NEW_INSTANCE, KFunction::class)
-                .build()
-            companionObjectBuilder.addFunction(functionNew)
+            if (resolvedJsInterface.generateNewInstanceFunction) {
+                // new函数
+                val functionNew = FunSpec.builder(STATIC_FUNC_NAME_NEW_INSTANCE)
+                    .addModifiers(KModifier.INLINE) // inline fun new
+                    .addTypeVariable(
+                        TypeVariableName(
+                            "T",
+                            bounds = arrayOf(resolvedJsInterface.ksType.asTypeName())
+                        ).copy(reified = true)
+                    ) // <reified T:annotatedClass.typeElement>
+                    .returns(TypeVariableName("T").copy(nullable = true)) // : T?
+                    .addParameter("webEngine", WebEngine::class)
+                    .addParameter(FUNC_ARG_JSCODE, String::class)
+                    .addParameter(FUNC_ARG_VARARGS, Any::class, KModifier.VARARG) // vararg args: Any
+                    .addCode(CODE_NEW_INSTANCE, KFunction::class)
+                    .build()
+                companionObjectBuilder.addFunction(functionNew)
+            }
         }
 
         private fun createInstanceFunctions(classBuilder: TypeSpec.Builder) {

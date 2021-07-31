@@ -1,11 +1,16 @@
 package com.zimolab.monacofx.monaco.editor
 
-abstract class IEditorAction(
-    val id: String,
-    val label: String,
-    val alias: String
-) {
+import com.zimolab.jsobject.annotations.JsFunction
+import com.zimolab.jsobject.annotations.JsInterface
 
-    abstract fun isSupported(): Boolean
-    abstract fun run(): Any?
+@JsInterface
+interface IEditorAction {
+    val id: String
+    val label: String
+    val alias: String
+
+    @JsFunction
+    fun isSupported(): Boolean
+    @JsFunction
+    fun run(): Any?
 }
