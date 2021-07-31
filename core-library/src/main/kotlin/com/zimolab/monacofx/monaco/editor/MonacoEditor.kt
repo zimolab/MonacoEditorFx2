@@ -60,6 +60,58 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         const val SET_SCROLL_TOP = "setScrollTop"
         const val SET_SCROLL_POSITION = "$JS_EDITOR_ID.setScrollPosition(%s, %s);"
         const val SET_SCROLL_POSITION_XY = "setScrollPositionXY"
+        const val GET_ACTION = "getAction"
+        const val GET_CONTENT_HEIGHT = "getContentHeight"
+        const val GET_CONTENT_WIDTH = "getContentWidth"
+        const val GET_LAYOUT_INFO = "getLayoutInfo"
+        const val GET_LINE_DECORATIONS = "getLineDecorations"
+        const val GET_OFFSET_FOR_COLUMN = "getOffsetForColumn"
+        const val GET_SCROLL_HEIGHT = "getScrollHeight"
+        const val GET_SCROLL_LEFT = "getScrollLeft"
+        const val GET_SCROLL_TOP = "getScrollTop"
+        const val GET_SCROLL_WIDTH = "getScrollWidth"
+        const val GET_SCROLLED_VISIBLE_POSITION = "getScrolledVisiblePosition"
+        const val GET_SELECTION = "getSelection"
+        const val GET_SELECTIONS = "getSelections"
+        const val GET_SUPPORTED_ACTIONS = "getSupportedActions"
+        const val GET_TARGET_AT_CLIENT_POINT = "getTargetAtClientPoint"
+        const val GET_TOP_FOR_LINE_NUMBER = "getTopForLineNumber"
+        const val GET_TOP_FOR_POSITION = "getTopForPosition"
+        const val GET_VALUE = "getValue"
+        const val GET_VISIBLE_COLUMN_FROM_POSITION = "getVisibleColumnFromPosition"
+        const val GET_VISIBLE_RANGES = "getVisibleRanges"
+        const val HAS_TEXT_FOCUS = "hasTextFocus"
+        const val HAS_WIDGET_FOCUS = "hasWidgetFocus"
+        const val LAYOUT_CONTENT_WIDGET = "layoutContentWidget"
+        const val LAYOUT_OVERLAY_WIDGET = "layoutOverlayWidget"
+        const val POP_UNDO_STOP = "popUndoStop"
+        const val PUSH_UNDO_STOP = "pushUndoStop"
+        const val RENDER = "render"
+        const val RESTORE_VIEW_STATE = "restoreViewState"
+        const val REVEAL_LINE = "revealLine"
+        const val SAVE_VIEW_STATE = "saveViewState"
+        const val REVEAL_LINE_IN_CENTER = "revealLineInCenter"
+        const val REVEAL_LINE_IN_CENTER_IF_OUTSIDE_VIEWPORT = "revealLineInCenterIfOutsideViewport"
+        const val REVEAL_LINE_NEAR_TOP = "revealLineNearTop"
+        const val REVEAL_LINES = "revealLines"
+        const val REVEAL_LINES_IN_CENTER = "revealLinesInCenter"
+        const val REVEAL_LINES_IN_CENTER_IF_OUTSIDE_VIEWPORT = "revealLinesInCenterIfOutsideViewport"
+        const val REVEAL_LINES_NEAR_TOP = "revealLinesNearTop"
+        const val REVEAL_POSITION = "revealPosition"
+        const val REVEAL_POSITION_IN_CENTER = "revealPositionInCenter"
+        const val REVEAL_POSITION_IN_CENTER_IF_OUTSIDE_VIEWPORT = "revealPositionInCenterIfOutsideViewport"
+        const val REVEAL_POSITION_NEAR_TOP = "revealPositionNearTop"
+        const val REVEAL_RANGE = "revealRange"
+        const val REVEAL_RANGE_AT_TOP = "revealRangeAtTop"
+        const val REVEAL_RANGE_IN_CENTER = "revealRangeInCenter"
+        const val REVEAL_RANGE_IN_CENTER_IF_OUTSIDE_VIEWPORT = "revealRangeInCenterIfOutsideViewport"
+        const val REVEAL_RANGE_NEAR_TOP_IF_OUTSIDE_VIEWPORT = "revealRangeNearTopIfOutsideViewport"
+        const val SET_POSITION = "setPosition"
+        const val SET_SELECTION = "setSelection"
+        const val SET_SELECTIONS = "setSelections"
+        const val SET_VALUE = "setValue"
+        const val TRIGGER = "trigger"
+
     }
 
     var jsEditor: JSObject? = null
@@ -298,6 +350,20 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
                     IComputedEditorOptions(jsArray)
                 }
             }
+        }
+    }
+
+    /**
+     * 通过id获取Action
+     * @param id String
+     * @return EditorAction
+     */
+    fun getAction(id: String): EditorAction? {
+        return invoke(JSCODE.GET_ACTION, id)?.let { invokeReturn->
+            if (invokeReturn is JSObject)
+                EditorAction(invokeReturn)
+            else
+                null
         }
     }
 
