@@ -30,7 +30,7 @@ import com.zimolab.monacofx.monaco.languages.ILanguageExtensionPoint
 import javafx.scene.web.WebEngine
 import netscape.javascript.JSObject
 
-class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsBridge, IEditorEventListener {
+class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsBridge, IEditorEventProcessor {
     companion object {
         const val NAME_IN_JS_ENV = "javaEditorFx"
         const val DESCRIPTION = ""

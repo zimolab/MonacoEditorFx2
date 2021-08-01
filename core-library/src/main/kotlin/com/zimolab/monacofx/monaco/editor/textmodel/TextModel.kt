@@ -4,13 +4,18 @@ import com.zimolab.monacofx.jsbase.JsArray
 import com.zimolab.monacofx.jsbase.JsBridge
 import com.zimolab.monacofx.jsbase.inject
 import com.zimolab.monacofx.monaco.*
-import com.zimolab.monacofx.monaco.editor.FindMatch
 import com.zimolab.monacofx.monaco.editor.IIdentifiedSingleEditOperation
 import com.zimolab.monacofx.monaco.editor.TextModelResolvedOptions
 import com.zimolab.monacofx.monaco.editor.enums.EndOfLineSequence
+import com.zimolab.monacofx.monaco.editor.event.model.ModelContentChangedEvent
+import com.zimolab.monacofx.monaco.editor.event.model.ModelDecorationsChangedEvent
+import com.zimolab.monacofx.monaco.editor.event.model.ModelLanguageChangedEvent
+import com.zimolab.monacofx.monaco.editor.event.model.ModelOptionsChangedEvent
+import com.zimolab.monacofx.monaco.editor.textmodel.interfaces.*
 import netscape.javascript.JSObject
 
-class TextModel(private val model: JSObject) : JsBridge {
+class TextModel(private val model: JSObject) : JsBridge, ITextModelEventProcessor {
+
     init {
         model.inject(this)
     }
@@ -21,6 +26,106 @@ class TextModel(private val model: JSObject) : JsBridge {
 
     override fun getJavascriptName(): String = NAME_IN_JS
     override fun getDescription(): String = ""
+
+    //////////////////////////桥接JS层面ITextModel的事件////////////////
+    private val eventMap = mutableMapOf<Int, TextModelEventListener>()
+
+    override fun listen(eventId: Int, callback: TextModelEventListener) {
+        if (eventId in eventMap.keys) {
+            eventMap.remove(eventId)
+        }
+        eventMap[eventId] = callback
+    }
+
+    override fun unlisten(eventId: Int) {
+        if (eventId in eventMap.keys) {
+            eventMap.remove(eventId)
+        }
+    }
+
+    override fun isListened(eventId: Int): Boolean {
+        return eventId in eventMap.keys
+    }
+
+    // 该方法在JS层面被调用
+    fun onTextModelEvent(eventId: Int, event: Any?) {
+        if (isListened(eventId)) {
+            eventMap[eventId]?.invoke(eventId, event)
+        }
+    }
+
+    // 将ITextModel中的具体事件映射到kotlin层，以符合语言习惯
+    fun onDidChangeContent(listener: ModelContentChangedListener?) {
+        if (listener == null)
+            unlisten(TextModelEvents.onDidChangeContent)
+        else
+            listen(TextModelEvents.onDidChangeContent) {id, event->
+                if (event is JSObject)
+                    listener(id, ModelContentChangedEvent(event))
+            }
+    }
+
+    fun onDidChangeDecorations(listener: ModelDecorationsChangedListener?) {
+        if (listener == null)
+            unlisten(TextModelEvents.onDidChangeContent)
+        else
+            listen(TextModelEvents.onDidChangeContent) {id, event->
+                if (event is JSObject)
+                    listener(id, ModelDecorationsChangedEvent(event))
+            }
+
+    }
+
+    fun onDidChangeOptions(listener: ModelOptionsChangedListener?) {
+        if (listener == null)
+            unlisten(TextModelEvents.onDidChangeContent)
+        else
+            listen(TextModelEvents.onDidChangeContent) {id, event->
+                if (event is JSObject)
+                    listener(id, ModelOptionsChangedEvent(event))
+            }
+    }
+
+    fun onDidChangeLanguage(listener:ModelLanguageChangedListener?) {
+        if (listener == null)
+            unlisten(TextModelEvents.onDidChangeContent)
+        else
+            listen(TextModelEvents.onDidChangeContent) {id, event->
+                if (event is JSObject)
+                    listener(id, ModelLanguageChangedEvent(event))
+            }
+    }
+
+    fun onDidChangeLanguageConfiguration(listener: ModelChangeLanguageConfigurationListener?) {
+        if (listener == null)
+            unlisten(TextModelEvents.onDidChangeContent)
+        else
+            listen(TextModelEvents.onDidChangeContent) {id, event->
+                if (event is JSObject)
+                    listener(id, event)
+            }
+
+    }
+
+    fun onDidChangeAttached(listener: ModelChangeAttachedListener?) {
+        if (listener == null)
+            unlisten(TextModelEvents.onDidChangeContent)
+        else
+            listen(TextModelEvents.onDidChangeContent) { id, _ ->
+                    listener(id)
+            }
+    }
+
+    fun onWillDispose(listener: ModelWillDisposeListener?) {
+        if (listener == null)
+            unlisten(TextModelEvents.onDidChangeContent)
+        else
+            listen(TextModelEvents.onDidChangeContent) { id, _ ->
+                listener(id)
+            }
+    }
+
+    ////////////////////////////////////////////////////////////////
 
     var id: String = TODO()
 
