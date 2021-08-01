@@ -910,7 +910,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
-    fun setOnMouseUpListener(listener: ((eventId: Int, event: EditorMouseEvent)->Unit)?) {
+    fun onMouseUp(listener: ((eventId: Int, event: EditorMouseEvent)->Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onMouseUp)
             return
@@ -923,7 +923,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
-    fun setOnMouseMoveListener(listener: ((eventId: Int, event: EditorMouseEvent)->Unit)?) {
+    fun onMouseMove(listener: ((eventId: Int, event: EditorMouseEvent)->Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onMouseMove)
             return
@@ -935,7 +935,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
-    fun setOnMouseLeaveListener(listener: ((eventId: Int, event: EditorMouseEvent)->Unit)?) {
+    fun onMouseLeave(listener: ((eventId: Int, event: EditorMouseEvent)->Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onMouseLeave)
             return
@@ -947,7 +947,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
-    fun setOnKeyUpListener(listener: ((eventId: Int, event: KeyBoardEvent)->Unit)?) {
+    fun onKeyUp(listener: ((eventId: Int, event: KeyBoardEvent)->Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onKeyUp)
             return
@@ -959,7 +959,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
-    fun setOnKeyDownListener(listener: ((eventId: Int, event: KeyBoardEvent)->Unit)?) {
+    fun onKeyDown(listener: ((eventId: Int, event: KeyBoardEvent)->Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onKeyDown)
             return
@@ -971,7 +971,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
-    fun setOnScrollEvent(listener: ((eventId: Int, event: ScrollEvent)->Unit)?) {
+    fun onDidScrollChange(listener: ((eventId: Int, event: ScrollEvent)->Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onDidScrollChange)
             return
@@ -983,7 +983,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
-    fun setOnPasteListener(listener: ((eventId: Int, event: PasteEvent)->Unit)?) {
+    fun onDidPaste(listener: ((eventId: Int, event: PasteEvent)->Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onDidPaste)
             return
@@ -995,7 +995,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
-    fun setLayoutChangeListener(listener: ((eventId: Int, event: EditorLayoutInfo)->Unit)?) {
+    fun onDidLayoutChange(listener: ((eventId: Int, event: EditorLayoutInfo)->Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onDidLayoutChange)
             return
@@ -1007,7 +1007,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
-    fun setOnGainFocusListener(listener: ((eventId: Int)->Unit)?) {
+    fun onGainFocus(listener: ((eventId: Int)->Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onDidFocusEditorWidget)
             unlisten(EditorEvents.onDidFocusEditorText)
@@ -1020,7 +1020,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         listen(EditorEvents.onDidFocusEditorWidget, callback)
     }
 
-    fun setOnLostFocusListener(listener: ((eventId: Int)->Unit)?) {
+    fun onLostFocus(listener: ((eventId: Int)->Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onDidBlurEditorText)
             unlisten(EditorEvents.onDidBlurEditorWidget)
@@ -1033,7 +1033,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         listen(EditorEvents.onDidBlurEditorWidget, callback)
     }
 
-    fun setOnContextMenuListener(listener: ((eventId: Int, event: EditorMouseEvent)->Unit)?) {
+    fun onContextMenu(listener: ((eventId: Int, event: EditorMouseEvent)->Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onContextMenu)
             return
@@ -1045,7 +1045,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
-    fun setOnAttemptReadyOnlyEditListener(listener: ((eventId: Int) -> Unit)?) {
+    fun onDidAttemptReadOnlyEdit(listener: ((eventId: Int) -> Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onDidAttemptReadOnlyEdit)
             return
@@ -1055,7 +1055,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
-    fun setOnChangeConfigurationListener(listener:( (eventId: Int, event: ConfigurationChangedEvent)->Unit)?) {
+    fun onDidChangeConfiguration(listener:( (eventId: Int, event: ConfigurationChangedEvent)->Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onDidChangeConfiguration)
             return
@@ -1066,7 +1066,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
-    fun setOnChangeCursorPositionListener(listener:( (eventId: Int, event: CursorPositionChangedEvent)->Unit)?) {
+    fun onDidChangeCursorPosition(listener:( (eventId: Int, event: CursorPositionChangedEvent)->Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onDidChangeCursorPosition)
             return
@@ -1077,7 +1077,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
-    fun setOnChangeCursorSelectionListener(listener:( (eventId: Int, event: CursorSelectionChangedEvent)->Unit)?) {
+    fun onDidChangeCursorSelection(listener:( (eventId: Int, event: CursorSelectionChangedEvent)->Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onDidChangeCursorSelection)
             return
@@ -1088,7 +1088,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
-    fun setOnChangeModelContentListener(listener:( (eventId: Int, event: ModelContentChangedEvent)->Unit)?) {
+    fun onDidChangeModelContent(listener:( (eventId: Int, event: ModelContentChangedEvent)->Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onDidChangeModelContent)
             return
@@ -1099,7 +1099,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
-    fun setOnChangeModelLanguageListener(listener:( (eventId: Int, event: ModelLanguageChangedEvent)->Unit)?) {
+    fun onDidChangeModelLanguage(listener:( (eventId: Int, event: ModelLanguageChangedEvent)->Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onDidChangeModelLanguage)
             return
@@ -1110,7 +1110,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
-    fun setOnChangeModelOptionsListener(listener:( (eventId: Int, event: ModelOptionsChangedEvent)->Unit)?) {
+    fun onDidChangeModelOptions(listener:( (eventId: Int, event: ModelOptionsChangedEvent)->Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onDidChangeModelOptions)
             return
@@ -1121,7 +1121,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
-    fun setOnContentSizeChangeListener(listener:( (eventId: Int, event: ContentSizeChangedEvent)->Unit)?) {
+    fun onDidContentSizeChange(listener:( (eventId: Int, event: ContentSizeChangedEvent)->Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onDidContentSizeChange)
             return
@@ -1131,7 +1131,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
                 listener(eventId, ContentSizeChangedEvent(e))
         }
     }
-    fun setOnDisposeListener(listener: ((eventId: Int)->Unit)?) {
+    fun onDidDispose(listener: ((eventId: Int)->Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onDidDispose)
             return

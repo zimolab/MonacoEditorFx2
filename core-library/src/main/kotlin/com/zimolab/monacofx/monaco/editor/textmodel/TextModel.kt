@@ -12,20 +12,31 @@ import com.zimolab.monacofx.monaco.editor.event.model.ModelDecorationsChangedEve
 import com.zimolab.monacofx.monaco.editor.event.model.ModelLanguageChangedEvent
 import com.zimolab.monacofx.monaco.editor.event.model.ModelOptionsChangedEvent
 import com.zimolab.monacofx.monaco.editor.textmodel.interfaces.*
+import jdk.jfr.Description
 import netscape.javascript.JSObject
 
 class TextModel(private val model: JSObject) : JsBridge, ITextModelEventProcessor {
 
     init {
-        model.inject(this)
+        getReady()
     }
 
     companion object {
         const val NAME_IN_JS = "javaEditorFxModel"
+        const val DESCRIPTION = ""
+    }
+
+    object JSCODE {
+        const val GET_READY = "onReady"
     }
 
     override fun getJavascriptName(): String = NAME_IN_JS
-    override fun getDescription(): String = ""
+    override fun getDescription(): String = DESCRIPTION
+
+    fun getReady() {
+        model.inject(this)
+
+    }
 
     //////////////////////////桥接JS层面ITextModel的事件////////////////
     private val eventMap = mutableMapOf<Int, TextModelEventListener>()
@@ -127,6 +138,8 @@ class TextModel(private val model: JSObject) : JsBridge, ITextModelEventProcesso
 
     ////////////////////////////////////////////////////////////////
 
+
+    /////////////////////////////ITextModel APIs////////////////////
     var id: String = TODO()
 
     fun getOptions(): TextModelResolvedOptions {
@@ -435,4 +448,5 @@ class TextModel(private val model: JSObject) : JsBridge, ITextModelEventProcesso
     fun isAttachedToEditor(): Boolean {
         TODO()
     }
+    /////////////////////////////////////////////////////////////
 }
