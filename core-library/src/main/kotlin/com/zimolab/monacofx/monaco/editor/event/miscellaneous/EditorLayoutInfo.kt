@@ -14,6 +14,6 @@ class EditorLayoutInfo(jsObject: JSObject): AbstractIEditorLayoutInfo(jsObject) 
 
     override val minimap: EditorMinimapLayoutInfo
         get() = _minimap
-    override val overviewRuler: Any
-        get() = super.overviewRuler
+    override val overviewRuler: OverviewRulerPosition
+        get() = _overviewRuler
 }

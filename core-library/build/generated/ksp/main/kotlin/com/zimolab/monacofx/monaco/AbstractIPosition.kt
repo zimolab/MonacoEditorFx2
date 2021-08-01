@@ -10,12 +10,12 @@ import netscape.javascript.JSObject
  * This class is auto-generated from "com.zimolab.monacofx.monaco.IPosition".It may be overwritten
  * at any time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it with your own
  * implementation.
- * @2021-07-31T15:28:43.910898200
+ * @2021-07-31T22:39:44.218378800
  */
 public abstract class AbstractIPosition(
   public val targetObject: JSObject
 ) : IPosition {
-  public override val column: Int?
+  public override val column: Int
     get() {
       val result = targetObject.getMember("column")
       if(result == "undefined" || result == null)
@@ -23,7 +23,7 @@ public abstract class AbstractIPosition(
       return result as Int
     }
 
-  public override val lineNumber: Int?
+  public override val lineNumber: Int
     get() {
       val result = targetObject.getMember("lineNumber")
       if(result == "undefined" || result == null)

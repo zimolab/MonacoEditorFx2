@@ -10,7 +10,7 @@ import netscape.javascript.JSObject
  * "com.zimolab.monacofx.monaco.editor.event.scroll.IScrollEvent".It may be overwritten at any time,
  * every change to it will be lost. DO NOT MODIFY IT. Just inherit from it with your own
  * implementation.
- * @2021-07-31T15:28:44.159564600
+ * @2021-07-31T22:39:44.404416300
  */
 public abstract class AbstractIScrollEvent(
   public val targetObject: JSObject

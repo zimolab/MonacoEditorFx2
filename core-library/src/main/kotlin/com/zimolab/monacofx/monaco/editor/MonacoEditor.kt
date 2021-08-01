@@ -1,16 +1,17 @@
 package com.zimolab.monacofx.monaco.editor
 
-
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
+import com.zimolab.monacofx.MonacoEditorFx
+import com.zimolab.monacofx.jsbase.JsArray
 import com.zimolab.monacofx.jsbase.JsBridge
 import com.zimolab.monacofx.jsbase.execute
 import com.zimolab.monacofx.jsbase.invoke
 import com.zimolab.monacofx.monaco.Globals.JS_EDITOR_NAMESPACE
 import com.zimolab.monacofx.monaco.Globals.JS_EXCEPTION
-import com.zimolab.monacofx.monaco.languages.ILanguageExtensionPoint
-import com.zimolab.monacofx.MonacoEditorFx
+import com.zimolab.monacofx.monaco.IPosition
+import com.zimolab.monacofx.monaco.RangeObject
 import com.zimolab.monacofx.monaco.editor.event.cursor.CursorPositionChangedEvent
 import com.zimolab.monacofx.monaco.editor.event.cursor.CursorSelectionChangedEvent
 import com.zimolab.monacofx.monaco.editor.event.keyboard.KeyBoardEvent
@@ -22,10 +23,12 @@ import com.zimolab.monacofx.monaco.editor.event.model.ModelContentChangedEvent
 import com.zimolab.monacofx.monaco.editor.event.model.ModelLanguageChangedEvent
 import com.zimolab.monacofx.monaco.editor.event.model.ModelOptionsChangedEvent
 import com.zimolab.monacofx.monaco.editor.event.mouse.EditorMouseEvent
+import com.zimolab.monacofx.monaco.editor.event.mouse.MouseTarget
 import com.zimolab.monacofx.monaco.editor.event.scroll.ScrollEvent
+import com.zimolab.monacofx.monaco.editor.textmodel.TextModel
+import com.zimolab.monacofx.monaco.languages.ILanguageExtensionPoint
 import javafx.scene.web.WebEngine
 import netscape.javascript.JSObject
-import kotlin.reflect.KClass
 
 class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsBridge, IEditorEventListener {
     companion object {
@@ -34,10 +37,6 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         const val JS_EDITOR_ID = "${JS_EDITOR_NAMESPACE}.editor"
         const val JS_INVOKE_EXCEPTION = "JSInvokeException"
         val ERROR_UNEXPECTED_RETURN_VALUE = Throwable("JS invoke did not return a value as expected")
-
-        // 事件相关常量
-        const val MOUSE_BUTTON_UP = 0
-        const val MOUSE_BUTTON_DOWN = 1
     }
 
     object JSCODE {
@@ -106,11 +105,14 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         const val REVEAL_RANGE_IN_CENTER = "revealRangeInCenter"
         const val REVEAL_RANGE_IN_CENTER_IF_OUTSIDE_VIEWPORT = "revealRangeInCenterIfOutsideViewport"
         const val REVEAL_RANGE_NEAR_TOP_IF_OUTSIDE_VIEWPORT = "revealRangeNearTopIfOutsideViewport"
-        const val SET_POSITION = "setPosition"
-        const val SET_SELECTION = "setSelection"
-        const val SET_SELECTIONS = "setSelections"
+        const val SET_POSITION = "$JS_EDITOR_ID.setPosition(%s)"
+        const val SET_SELECTION = "$JS_EDITOR_ID.setSelection(%s)"
+        const val SET_SELECTIONS = "$JS_EDITOR_ID.setSelections(%s)"
         const val SET_VALUE = "setValue"
         const val TRIGGER = "trigger"
+        const val EXECUTE_EDITS = "$JS_EDITOR_ID.executeEdits(%s, %s, %s)"
+        const val GET_MODEL = "getModel"
+
 
     }
 
@@ -120,6 +122,14 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
     private val editorEvents: MutableMap<Int, (eventId: Int, e: Any?)->Any?> by lazy {
         mutableMapOf()
     }
+
+    val textModel: TextModel?
+        get() {
+            return when(val r = invoke(JSCODE.GET_MODEL)) {
+                is JSObject -> TextModel(r)
+                else -> null
+            }
+        }
 
 
     override fun getJavascriptName() = NAME_IN_JS_ENV
@@ -148,6 +158,8 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         return invoke(JSCODE.IS_READY) == true
     }
 
+
+    ///////////////////////////////Editor API///////////////////////////////////////
     /**
      * 创建Editor实例
      * @param createOptions IStandaloneEditorConstructionOptions?
@@ -163,6 +175,65 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
     fun autoLayout(): Boolean {
         return invoke(JSCODE.AUTO_LAYOUT) == true
     }
+
+    /**
+     *
+     * @return CodeEditorViewState?
+     */
+    fun saveViewState(): CodeEditorViewState? {
+        return when(val r = invoke(JSCODE.SAVE_VIEW_STATE)) {
+            is JSObject -> CodeEditorViewState(r)
+            else -> null
+        }
+    }
+
+    /**
+     *
+     * @param state CodeEditorViewState
+     * @return Boolean
+     */
+    fun restoreViewState(state: CodeEditorViewState): Boolean {
+        return invoke(JSCODE.RESTORE_VIEW_STATE, state.targetObject) == true
+    }
+
+    /**
+     *
+     * @return Boolean
+     */
+    fun hasWidgetFocus(): Boolean {
+        return invoke(JSCODE.HAS_WIDGET_FOCUS) == true
+    }
+
+    /**
+     *
+     * @return Boolean
+     */
+    fun hasTextFocus(): Boolean {
+        return invoke(JSCODE.HAS_TEXT_FOCUS) == true
+    }
+
+    /**
+     *
+     * @return Int?
+     */
+    fun getContentWidth(): Int? {
+        return when(val r = invoke(JSCODE.GET_CONTENT_WIDTH)) {
+            is Int -> r
+            else -> null
+        }
+    }
+
+    /**
+     *
+     * @return Int?
+     */
+    fun getContentHeight(): Int? {
+        return when(val r = invoke(JSCODE.GET_CONTENT_HEIGHT)) {
+            is Int -> r
+            else -> null
+        }
+    }
+
 
     /**
      * 添加一个动作
@@ -340,6 +411,116 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
     fun focus(): Boolean = invoke(JSCODE.FOCUS) == true
 
     /**
+     *
+     * @return Boolean
+     */
+    fun pushUndoStop(): Boolean {
+        return invoke(JSCODE.PUSH_UNDO_STOP) == true
+    }
+
+    /**
+     *
+     * @return Boolean
+     */
+    fun popUndoStop(): Boolean {
+        return invoke(JSCODE.POP_UNDO_STOP) == true
+    }
+
+    /**
+     *
+     * @return EditorLayoutInfo?
+     */
+    fun getLayoutInfo(): EditorLayoutInfo? {
+        return when(val r = invoke(JSCODE.GET_LAYOUT_INFO)) {
+            is JSObject -> EditorLayoutInfo(r)
+            else -> null
+        }
+    }
+
+    /**
+     *
+     * @param lineNumber Int
+     * @param column Int
+     * @return Int?
+     */
+    fun getOffsetForColumn(lineNumber: Int, column: Int): Int? {
+        return when(val r = invoke(JSCODE.GET_OFFSET_FOR_COLUMN)) {
+            is Int -> r
+            else -> null
+        }
+    }
+
+    /**
+     *
+     * @param forceRedraw Boolean
+     * @return Boolean
+     */
+    fun render(forceRedraw: Boolean): Boolean {
+        return invoke(JSCODE.RENDER, forceRedraw) == true
+    }
+
+    /**
+     *
+     * @param clientX Int
+     * @param clientY Int
+     * @return MouseTarget?
+     */
+    fun getTargetAtClientPoint(clientX: Int, clientY: Int): MouseTarget? {
+        return when(val r = invoke(JSCODE.GET_TARGET_AT_CLIENT_POINT)) {
+            is JSObject -> MouseTarget(r)
+            else -> null
+        }
+    }
+
+    /**
+     *
+     * @param position IPosition
+     * @return Any?
+     */
+    fun getScrolledVisiblePosition(position: IPosition): Any? {
+        return when(val r = invoke(JSCODE.GET_TARGET_AT_CLIENT_POINT)) {
+            is JSObject -> r
+            else -> null
+        }
+    }
+
+    /**
+     *
+     * @return JsArray?
+     */
+    fun getVisibleRanges(): JsArray? {
+        return when(val r = invoke(JSCODE.GET_VISIBLE_RANGES)) {
+            is JSObject -> JsArray(r)
+            else -> null
+        }
+    }
+
+    /**
+     *
+     * @param lineNumber Int
+     * @return Int?
+     */
+    fun getTopForLineNumber(lineNumber: Int): Int? {
+        return when(val r = invoke(JSCODE.GET_TOP_FOR_LINE_NUMBER, lineNumber)) {
+            is Int -> r
+            else -> null
+        }
+    }
+
+    /**
+     *
+     * @param lineNumber Int
+     * @param column Int
+     * @return Int?
+     */
+    fun getTopForPosition(lineNumber: Int, column: Int): Int? {
+        return when(val r = invoke(JSCODE.GET_TOP_FOR_POSITION, lineNumber, column)) {
+            is Int -> r
+            else -> null
+        }
+    }
+
+    /**
      * 获取当前设置
      * @return IComputedEditorOptions?
      */
@@ -470,8 +651,140 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         } == true
     }
 
-    fun execute(jsCode: String): Any? {
 
+    /**
+     *
+     * @return Int?
+     */
+    fun getScrollWidth(): Int? {
+        return when(val r = invoke(JSCODE.GET_SCROLL_WIDTH)) {
+            is Int -> r
+            else -> null
+        }
+    }
+
+    /**
+     *
+     * @return Int?
+     */
+    fun getScrollLeft(): Int? {
+        return when(val r = invoke(JSCODE.GET_SCROLL_LEFT)) {
+            is Int -> r
+            else -> null
+        }
+    }
+
+    /**
+     *
+     * @return Int?
+     */
+    fun getScrollHeight(): Int?{
+        return when(val r = invoke(JSCODE.GET_SCROLL_HEIGHT)) {
+            is Int -> r
+            else -> null
+        }
+    }
+
+    /**
+     *
+     * @return Int?
+     */
+    fun getScrollTop(): Int? {
+        return when(val r = invoke(JSCODE.GET_SCROLL_TOP)) {
+            is Int -> r
+            else -> null
+        }
+    }
+
+    /**
+     *
+     * @param selections Array<ISelection>
+     * @return Boolean
+     */
+    fun setSelections(selections: Array<SelectionObject>): Boolean {
+        return execute(JSCODE.SET_SELECTIONS.format(JSON.toJSONString(selections))) == true
+    }
+
+    /**
+     *
+     * @param selection RangeObject
+     * @return Boolean
+     */
+    fun setSelection(selection: RangeObject): Boolean {
+        return execute(JSCODE.SET_SELECTION.format(JSON.toJSONString(selection))) == true
+    }
+
+    /**
+     *
+     * @param selection SelectionObject
+     * @return Boolean
+     */
+    fun setSelection(selection: SelectionObject): Boolean {
+        return execute(JSCODE.SET_SELECTION.format(JSON.toJSONString(selection))) == true
+    }
+
+    /**
+     *
+     * @param column Int
+     * @param lineNumber Int
+     * @return Boolean
+     */
+    fun setPosition(column: Int, lineNumber: Int): Boolean {
+        return execute(JSCODE.SET_POSITION.format("""{column:$column, lineNumber:$lineNumber}""")) == true
+    }
+
+
+    /**
+     *
+     * @param position IPosition
+     * @return Boolean
+     */
+    fun setPosition(position: IPosition): Boolean {
+        return execute(JSCODE.SET_POSITION.format(JSON.toJSONString(position))) == true
+    }
+
+    /**
+     *
+     * @param value String
+     * @return Boolean
+     */
+    fun setValue(value: String): Boolean {
+        return invoke(JSCODE.SET_VALUE, value) == true
+    }
+
+
+
+    /**
+     *
+     * @param source String?
+     * @param edits Array<IIdentifiedSingleEditOperation>
+     * @param endCursorState Array<SelectionObject>?
+     * @return Boolean
+     */
+    fun executeEdits(source: String?, edits: Array<IIdentifiedSingleEditOperation>, endCursorState: Array<SelectionObject>?): Boolean {
+        return if (endCursorState == null) {
+            invoke(JSCODE.EXECUTE_EDITS.format(source, JSON.toJSONString(edits), "undefined"))
+        } else {
+            invoke(JSCODE.EXECUTE_EDITS.format(source, JSON.toJSONString(edits), JSON.toJSONString(endCursorState)))
+        } == true
+    }
+
+    /**
+     * 直接触发一个动作
+     * @param source String
+     * @param handlerId String
+     * @param payload Any?
+     */
+    fun trigger(source: String?, handlerId: String, payload: Any?): Boolean {
+        return (if (payload == null)
+            invoke(JSCODE.TRIGGER, source, handlerId)
+        else
+            invoke(JSCODE.TRIGGER, source, handlerId, payload)) == true
+    }
+
+
+    ///////////////////////////////工具、辅助方法/////////////////////////////////
+    fun execute(jsCode: String): Any? {
         val result = webEngine.execute(jsCode)
         if (result is Throwable) {
             monacoFx.internalErrorOccurs(JS_EXCEPTION, result)
@@ -568,6 +881,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
+    ///////////////////////////////事件监听////////////////////////////////////////////////
     override fun listen(eventId: Int, callback: (eventId: Int, e: Any?) -> Any?) {
         if (eventId in editorEvents)
             editorEvents.remove(eventId)
@@ -827,3 +1141,14 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 }
+
+//fun main() {
+//    val selections = arrayOf(
+//        SelectionObject(1, 2,3,4),
+//        SelectionObject(2, 2,3,4),
+//        SelectionObject(3, 2,3,4),
+//    )
+//    val a = JSON.toJSONString(selections)
+//    println(a)
+//    println(MonacoEditor.JSCODE.SET_SELECTIONS.format(a))
+//}

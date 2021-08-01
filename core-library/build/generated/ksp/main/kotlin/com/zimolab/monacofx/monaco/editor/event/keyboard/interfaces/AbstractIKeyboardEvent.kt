@@ -12,7 +12,7 @@ import netscape.javascript.JSObject
  * "com.zimolab.monacofx.monaco.editor.event.keyboard.interfaces.IKeyboardEvent".It may be overwritten
  * at any time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it with your own
  * implementation.
- * @2021-07-31T15:28:44.035910200
+ * @2021-07-31T22:39:44.323398
  */
 public abstract class AbstractIKeyboardEvent(
   public val targetObject: JSObject

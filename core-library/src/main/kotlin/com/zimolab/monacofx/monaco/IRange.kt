@@ -1,14 +1,15 @@
 package com.zimolab.monacofx.monaco
 
+import com.alibaba.fastjson.annotation.JSONField
 import com.zimolab.jsobject.annotations.JsFunction
 import com.zimolab.jsobject.annotations.JsInterface
 
 @JsInterface
 interface IRange {
-    val startLineNumber: Int?
-    val startColumn: Int?
-    val endLineNumber: Int?
-    val endColumn: Int?
+    val startLineNumber: Int
+    val startColumn: Int
+    val endLineNumber: Int
+    val endColumn: Int
 
     @JsFunction
     fun isEmpty(): Boolean

@@ -8,7 +8,7 @@ import netscape.javascript.JSObject
  * This class is auto-generated from "com.zimolab.monacofx.monaco.UriComponents".It may be
  * overwritten at any time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it
  * with your own implementation.
- * @2021-07-31T15:28:43.975907100
+ * @2021-07-31T22:39:44.262384200
  */
 public abstract class AbstractUriComponents(
   public val targetObject: JSObject

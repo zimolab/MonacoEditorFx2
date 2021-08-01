@@ -5,8 +5,8 @@ import com.zimolab.jsobject.annotations.JsInterface
 
 @JsInterface
 interface IPosition {
-    val column: Int?
-    val lineNumber: Int?
+    val column: Int
+    val lineNumber: Int
     @JsFunction
     fun with(newLineNumber: Int, newColumn: Int): Any
     @JsFunction

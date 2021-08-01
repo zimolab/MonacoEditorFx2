@@ -9,7 +9,7 @@ import netscape.javascript.JSObject
  * This class is auto-generated from "com.zimolab.monacofx.monaco.editor.IEditorAction".It may be
  * overwritten at any time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it
  * with your own implementation.
- * @2021-07-31T15:28:43.985897600
+ * @2021-07-31T22:39:44.284388300
  */
 public abstract class AbstractIEditorAction(
   public val targetObject: JSObject
