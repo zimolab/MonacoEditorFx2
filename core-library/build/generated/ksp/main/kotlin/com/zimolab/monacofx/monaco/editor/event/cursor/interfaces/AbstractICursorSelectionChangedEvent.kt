@@ -11,7 +11,7 @@ import netscape.javascript.JSObject
  * "com.zimolab.monacofx.monaco.editor.event.cursor.interfaces.ICursorSelectionChangedEvent".It may be
  * overwritten at any time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it
  * with your own implementation.
- * @2021-08-01T19:03:48.001948400
+ * @2021-08-01T23:11:49.384393500
  */
 public abstract class AbstractICursorSelectionChangedEvent(
   public val targetObject: JSObject

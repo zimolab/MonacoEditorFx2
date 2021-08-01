@@ -4,15 +4,15 @@ import com.zimolab.monacofx.jsbase.JsArray
 import com.zimolab.monacofx.jsbase.JsBridge
 import com.zimolab.monacofx.jsbase.inject
 import com.zimolab.monacofx.monaco.*
-import com.zimolab.monacofx.monaco.editor.IIdentifiedSingleEditOperation
-import com.zimolab.monacofx.monaco.editor.TextModelResolvedOptions
+import com.zimolab.monacofx.monaco.editor.options.IIdentifiedSingleEditOperation
+import com.zimolab.monacofx.monaco.editor.options.TextModelResolvedOptions
 import com.zimolab.monacofx.monaco.editor.enums.EndOfLineSequence
-import com.zimolab.monacofx.monaco.editor.event.model.ModelContentChangedEvent
-import com.zimolab.monacofx.monaco.editor.event.model.ModelDecorationsChangedEvent
-import com.zimolab.monacofx.monaco.editor.event.model.ModelLanguageChangedEvent
-import com.zimolab.monacofx.monaco.editor.event.model.ModelOptionsChangedEvent
+import com.zimolab.monacofx.monaco.editor.event.textmodel.TextModelEvents
+import com.zimolab.monacofx.monaco.editor.event.textmodel.ModelContentChangedEvent
+import com.zimolab.monacofx.monaco.editor.event.textmodel.ModelDecorationsChangedEvent
+import com.zimolab.monacofx.monaco.editor.event.textmodel.ModelLanguageChangedEvent
+import com.zimolab.monacofx.monaco.editor.event.textmodel.ModelOptionsChangedEvent
 import com.zimolab.monacofx.monaco.editor.textmodel.interfaces.*
-import jdk.jfr.Description
 import netscape.javascript.JSObject
 
 class TextModel(private val model: JSObject) : JsBridge, ITextModelEventProcessor {
@@ -70,7 +70,7 @@ class TextModel(private val model: JSObject) : JsBridge, ITextModelEventProcesso
         if (listener == null)
             unlisten(TextModelEvents.onDidChangeContent)
         else
-            listen(TextModelEvents.onDidChangeContent) {id, event->
+            listen(TextModelEvents.onDidChangeContent) { id, event->
                 if (event is JSObject)
                     listener(id, ModelContentChangedEvent(event))
             }
@@ -80,7 +80,7 @@ class TextModel(private val model: JSObject) : JsBridge, ITextModelEventProcesso
         if (listener == null)
             unlisten(TextModelEvents.onDidChangeContent)
         else
-            listen(TextModelEvents.onDidChangeContent) {id, event->
+            listen(TextModelEvents.onDidChangeContent) { id, event->
                 if (event is JSObject)
                     listener(id, ModelDecorationsChangedEvent(event))
             }
@@ -91,7 +91,7 @@ class TextModel(private val model: JSObject) : JsBridge, ITextModelEventProcesso
         if (listener == null)
             unlisten(TextModelEvents.onDidChangeContent)
         else
-            listen(TextModelEvents.onDidChangeContent) {id, event->
+            listen(TextModelEvents.onDidChangeContent) { id, event->
                 if (event is JSObject)
                     listener(id, ModelOptionsChangedEvent(event))
             }
@@ -101,7 +101,7 @@ class TextModel(private val model: JSObject) : JsBridge, ITextModelEventProcesso
         if (listener == null)
             unlisten(TextModelEvents.onDidChangeContent)
         else
-            listen(TextModelEvents.onDidChangeContent) {id, event->
+            listen(TextModelEvents.onDidChangeContent) { id, event->
                 if (event is JSObject)
                     listener(id, ModelLanguageChangedEvent(event))
             }
@@ -111,7 +111,7 @@ class TextModel(private val model: JSObject) : JsBridge, ITextModelEventProcesso
         if (listener == null)
             unlisten(TextModelEvents.onDidChangeContent)
         else
-            listen(TextModelEvents.onDidChangeContent) {id, event->
+            listen(TextModelEvents.onDidChangeContent) { id, event->
                 if (event is JSObject)
                     listener(id, event)
             }

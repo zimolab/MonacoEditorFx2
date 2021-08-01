@@ -10,7 +10,7 @@ import com.zimolab.monacofx.monaco.Globals.JS_HOST_ENV_READY_EVENT
 import com.zimolab.monacofx.monaco.editor.MonacoEditor
 import com.zimolab.monacofx.monaco.editor.MonacoEditor.Companion.JS_EDITOR_ID
 import com.zimolab.monacofx.monaco.Globals.JS_UNDEFINED
-import com.zimolab.monacofx.monaco.editor.IStandaloneEditorConstructionOptions
+import com.zimolab.monacofx.monaco.editor.options.IStandaloneEditorConstructionOptions
 import com.zimolab.monacofx.util.Logger
 import com.zimolab.monacofx.jsbase.*
 import javafx.beans.property.ReadOnlyBooleanProperty

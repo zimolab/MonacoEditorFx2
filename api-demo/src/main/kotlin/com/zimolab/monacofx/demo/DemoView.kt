@@ -37,18 +37,9 @@ class DemoView : View("MonacoEditorFx Demo") {
 //        monacoEditorFx.editor.setOnScrollEvent { eventId, event ->
 //            println("${event.scrollLeft}, ${event.scrollTop}")
 //        }
-        monacoEditorFx.editor.setOnPasteListener { eventId, event ->
+        monacoEditorFx.editor.onDidPaste { eventId, event ->
             println("${event.mode}, ${event.range}")
         }
-
-        monacoEditorFx.editor.setLayoutChangeListener { eventId, event ->
-            println("${event.height}, ${event.width}")
-        }
-
-        monacoEditorFx.editor.setOnGainFocusListener { eventId ->
-            println("${eventId} focused.")
-        }
-
 //        monacoEditorFx.editor.setOnChangeCursorPositionListener { eventId, e ->
 //            println("change cursor position: (${e.position.lineNumber}, ${e.position.column}) reason: ${e.reason} ${e.secondaryPositions}")
 //        }

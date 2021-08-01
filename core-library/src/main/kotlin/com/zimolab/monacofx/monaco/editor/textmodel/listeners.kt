@@ -1,9 +1,9 @@
 package com.zimolab.monacofx.monaco.editor.textmodel
 
-import com.zimolab.monacofx.monaco.editor.event.model.interfaces.IModelContentChangedEvent
-import com.zimolab.monacofx.monaco.editor.event.model.interfaces.IModelDecorationsChangedEvent
-import com.zimolab.monacofx.monaco.editor.event.model.interfaces.IModelLanguageChangedEvent
-import com.zimolab.monacofx.monaco.editor.event.model.interfaces.IModelOptionsChangedEvent
+import com.zimolab.monacofx.monaco.editor.event.textmodel.interfaces.IModelContentChangedEvent
+import com.zimolab.monacofx.monaco.editor.event.textmodel.interfaces.IModelDecorationsChangedEvent
+import com.zimolab.monacofx.monaco.editor.event.textmodel.interfaces.IModelLanguageChangedEvent
+import com.zimolab.monacofx.monaco.editor.event.textmodel.interfaces.IModelOptionsChangedEvent
 import netscape.javascript.JSObject
 
 typealias TextModelEventListener = (eventId: Int, e: Any?) -> Any?

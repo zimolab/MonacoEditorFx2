@@ -10,7 +10,7 @@ import netscape.javascript.JSObject
  * This class is auto-generated from "com.zimolab.monacofx.monaco.IRange".It may be overwritten at
  * any time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it with your own
  * implementation.
- * @2021-08-01T19:03:47.910837900
+ * @2021-08-01T23:11:49.310373200
  */
 public abstract class AbstractIRange(
   public val targetObject: JSObject
