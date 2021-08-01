@@ -1,21 +1,17 @@
 package com.zimolab.monacofx.monaco.editor.textmodel
 
-import com.zimolab.monacofx.jsbase.JsArray
-import com.zimolab.monacofx.jsbase.JsBridge
-import com.zimolab.monacofx.jsbase.inject
+import com.zimolab.monacofx.jsbase.*
 import com.zimolab.monacofx.monaco.*
+import com.zimolab.monacofx.monaco.editor.MonacoEditor
+import com.zimolab.monacofx.monaco.editor.enums.EndOfLineSequence
+import com.zimolab.monacofx.monaco.editor.event.textmodel.*
 import com.zimolab.monacofx.monaco.editor.options.IIdentifiedSingleEditOperation
 import com.zimolab.monacofx.monaco.editor.options.TextModelResolvedOptions
-import com.zimolab.monacofx.monaco.editor.enums.EndOfLineSequence
-import com.zimolab.monacofx.monaco.editor.event.textmodel.TextModelEvents
-import com.zimolab.monacofx.monaco.editor.event.textmodel.ModelContentChangedEvent
-import com.zimolab.monacofx.monaco.editor.event.textmodel.ModelDecorationsChangedEvent
-import com.zimolab.monacofx.monaco.editor.event.textmodel.ModelLanguageChangedEvent
-import com.zimolab.monacofx.monaco.editor.event.textmodel.ModelOptionsChangedEvent
 import com.zimolab.monacofx.monaco.editor.textmodel.interfaces.*
 import netscape.javascript.JSObject
 
-class TextModel(private val model: JSObject) : JsBridge, ITextModelEventProcessor {
+class TextModel(val model: JSObject,
+                val monacoEditor: MonacoEditor) : JsBridge, ITextModelEventProcessor {
 
     init {
         getReady()
@@ -34,9 +30,31 @@ class TextModel(private val model: JSObject) : JsBridge, ITextModelEventProcesso
     override fun getDescription(): String = DESCRIPTION
 
     fun getReady() {
-        model.inject(this)
+        invoke(JSCODE.GET_READY, this)
 
     }
+
+    ////////////////////////////实用方法、辅助方法///////////////////////
+    fun execute(jsCode: String): Any? {
+        val result = monacoEditor.webEngine.execute(jsCode)
+        if (result is Throwable) {
+            monacoEditor.monacoFx.internalErrorOccurs(Globals.JS_EXCEPTION, result)
+            return null
+        }
+        return result
+    }
+
+    fun invoke(methodName: String, vararg args: Any?): Any? {
+        val result = model.invoke(methodName, *args)
+        if (result is Throwable) {
+            monacoEditor.monacoFx.internalErrorOccurs(Globals.JS_EXCEPTION, result)
+            return null
+        }
+        return result
+    }
+
+
+    //////////////////////////////////////////////////////////////////
 
     //////////////////////////桥接JS层面ITextModel的事件////////////////
     private val eventMap = mutableMapOf<Int, TextModelEventListener>()
@@ -70,7 +88,7 @@ class TextModel(private val model: JSObject) : JsBridge, ITextModelEventProcesso
         if (listener == null)
             unlisten(TextModelEvents.onDidChangeContent)
         else
-            listen(TextModelEvents.onDidChangeContent) { id, event->
+            listen(TextModelEvents.onDidChangeContent) { id, event ->
                 if (event is JSObject)
                     listener(id, ModelContentChangedEvent(event))
             }
@@ -80,28 +98,27 @@ class TextModel(private val model: JSObject) : JsBridge, ITextModelEventProcesso
         if (listener == null)
             unlisten(TextModelEvents.onDidChangeContent)
         else
-            listen(TextModelEvents.onDidChangeContent) { id, event->
+            listen(TextModelEvents.onDidChangeContent) { id, event ->
                 if (event is JSObject)
                     listener(id, ModelDecorationsChangedEvent(event))
             }
-
     }
 
     fun onDidChangeOptions(listener: ModelOptionsChangedListener?) {
         if (listener == null)
             unlisten(TextModelEvents.onDidChangeContent)
         else
-            listen(TextModelEvents.onDidChangeContent) { id, event->
+            listen(TextModelEvents.onDidChangeContent) { id, event ->
                 if (event is JSObject)
                     listener(id, ModelOptionsChangedEvent(event))
             }
     }
 
-    fun onDidChangeLanguage(listener:ModelLanguageChangedListener?) {
+    fun onDidChangeLanguage(listener: ModelLanguageChangedListener?) {
         if (listener == null)
             unlisten(TextModelEvents.onDidChangeContent)
         else
-            listen(TextModelEvents.onDidChangeContent) { id, event->
+            listen(TextModelEvents.onDidChangeContent) { id, event ->
                 if (event is JSObject)
                     listener(id, ModelLanguageChangedEvent(event))
             }
@@ -111,7 +128,7 @@ class TextModel(private val model: JSObject) : JsBridge, ITextModelEventProcesso
         if (listener == null)
             unlisten(TextModelEvents.onDidChangeContent)
         else
-            listen(TextModelEvents.onDidChangeContent) { id, event->
+            listen(TextModelEvents.onDidChangeContent) { id, event ->
                 if (event is JSObject)
                     listener(id, event)
             }
@@ -123,7 +140,7 @@ class TextModel(private val model: JSObject) : JsBridge, ITextModelEventProcesso
             unlisten(TextModelEvents.onDidChangeContent)
         else
             listen(TextModelEvents.onDidChangeContent) { id, _ ->
-                    listener(id)
+                listener(id)
             }
     }
 
@@ -131,8 +148,8 @@ class TextModel(private val model: JSObject) : JsBridge, ITextModelEventProcesso
         if (listener == null)
             unlisten(TextModelEvents.onDidChangeContent)
         else
-            listen(TextModelEvents.onDidChangeContent) { id, _ ->
-                listener(id)
+            listen(TextModelEvents.onDidChangeContent) { eventId, _ ->
+                listener(eventId)
             }
     }
 
@@ -140,7 +157,6 @@ class TextModel(private val model: JSObject) : JsBridge, ITextModelEventProcesso
 
 
     /////////////////////////////ITextModel APIs////////////////////
-    var id: String = TODO()
 
     fun getOptions(): TextModelResolvedOptions {
         TODO()

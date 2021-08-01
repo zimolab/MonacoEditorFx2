@@ -10,7 +10,7 @@ import netscape.javascript.JSObject
  * "com.zimolab.monacofx.monaco.editor.event.miscellaneous.interfaces.IPasteEvent".It may be
  * overwritten at any time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it
  * with your own implementation.
- * @2021-08-01T23:11:49.446404900
+ * @2021-08-02T01:28:50.189859700
  */
 public abstract class AbstractIPasteEvent(
   public val targetObject: JSObject

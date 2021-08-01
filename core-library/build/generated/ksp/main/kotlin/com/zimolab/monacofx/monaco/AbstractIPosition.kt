@@ -10,7 +10,7 @@ import netscape.javascript.JSObject
  * This class is auto-generated from "com.zimolab.monacofx.monaco.IPosition".It may be overwritten
  * at any time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it with your own
  * implementation.
- * @2021-08-01T23:11:49.219354800
+ * @2021-08-02T01:28:50.040741400
  */
 public abstract class AbstractIPosition(
   public val targetObject: JSObject

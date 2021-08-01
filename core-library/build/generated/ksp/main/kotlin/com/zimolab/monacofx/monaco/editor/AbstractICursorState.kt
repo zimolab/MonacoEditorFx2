@@ -9,7 +9,7 @@ import netscape.javascript.JSObject
  * This class is auto-generated from "com.zimolab.monacofx.monaco.editor.ICursorState".It may be
  * overwritten at any time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it
  * with your own implementation.
- * @2021-08-01T23:11:49.356384
+ * @2021-08-02T01:28:50.091747900
  */
 public abstract class AbstractICursorState(
   public val targetObject: JSObject

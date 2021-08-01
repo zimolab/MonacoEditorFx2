@@ -1,10 +1,13 @@
 package com.zimolab.monacofx.demo
 
 import com.zimolab.monacofx.MonacoEditorFx
+import com.zimolab.monacofx.monaco.Range
 import com.zimolab.monacofx.monaco.editor.IActionDescriptor
+import com.zimolab.monacofx.monaco.editor.event.textmodel.ModelContentChange
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.layout.VBox
+import netscape.javascript.JSObject
 import tornadofx.*
 import java.util.*
 
@@ -26,10 +29,6 @@ class DemoView : View("MonacoEditorFx Demo") {
         }
         monacoEditorFx.editorReadyProperty.addListener { observable, oldValue, newValue ->
             labelReady.text = "ready: ${newValue}"
-        }
-        monacoEditorFx.internalErrorProperty.addListener { observable, oldValue, newValue ->
-            labelError.text = "InternalError: ${newValue?.first}"
-        }
 
 //        monacoEditorFx.editor.setOnKeyUpListener { eventId, event ->
 //            println("${event.keyCode}, ${event.code}, ${event.ctrlKey}")
@@ -37,9 +36,9 @@ class DemoView : View("MonacoEditorFx Demo") {
 //        monacoEditorFx.editor.setOnScrollEvent { eventId, event ->
 //            println("${event.scrollLeft}, ${event.scrollTop}")
 //        }
-        monacoEditorFx.editor.onDidPaste { eventId, event ->
-            println("${event.mode}, ${event.range}")
-        }
+//            monacoEditorFx.editor.onDidPaste { eventId, event ->
+//                println("${event.mode}, ${event.range}")
+//            }
 //        monacoEditorFx.editor.setOnChangeCursorPositionListener { eventId, e ->
 //            println("change cursor position: (${e.position.lineNumber}, ${e.position.column}) reason: ${e.reason} ${e.secondaryPositions}")
 //        }
@@ -49,6 +48,14 @@ class DemoView : View("MonacoEditorFx Demo") {
 //        monacoEditorFx.editor.setOnLostFocusListener {
 //            println("lost focus")
 //        }
+            monacoEditorFx.editor.textModel.onDidChangeContent { eventId, event->
+                println("content change")
+                println(ModelContentChange(event.changes[0] as JSObject).text)
+            }
+        }
+        monacoEditorFx.internalErrorProperty.addListener { observable, oldValue, newValue ->
+            labelError.text = "InternalError: ${newValue?.first}"
+        }
 
         root.children.add(monacoEditorFx)
     }

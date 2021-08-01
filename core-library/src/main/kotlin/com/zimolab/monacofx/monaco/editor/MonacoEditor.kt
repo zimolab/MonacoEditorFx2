@@ -113,9 +113,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         const val SET_VALUE = "setValue"
         const val TRIGGER = "trigger"
         const val EXECUTE_EDITS = "$JS_EDITOR_ID.executeEdits(%s, %s, %s)"
-        const val GET_MODEL = "getModel"
-
-
+        const val GET_MODEL = "${JS_EDITOR_ID}.getTextModel()"
     }
 
     var jsEditor: JSObject? = null
@@ -125,13 +123,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         mutableMapOf()
     }
 
-    val textModel: TextModel?
-        get() {
-            return when(val r = invoke(JSCODE.GET_MODEL)) {
-                is JSObject -> TextModel(r)
-                else -> null
-            }
-        }
+    lateinit var textModel: TextModel
 
 
     override fun getJavascriptName() = NAME_IN_JS_ENV
@@ -168,7 +160,16 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Boolean
      */
     fun create(createOptions: IStandaloneEditorConstructionOptions?): Boolean {
-        return execute(JSCODE.CREATE.format(JSON.toJSONString(createOptions))) == true
+        val result = execute(JSCODE.CREATE.format(JSON.toJSONString(createOptions))) == true
+        if (result) {
+            val r = execute(JSCODE.GET_MODEL)
+            if (r is JSObject) {
+                textModel = TextModel(r, this)
+            } else {
+                return false
+            }
+        }
+        return result
     }
 
     /**

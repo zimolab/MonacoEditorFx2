@@ -1,33 +1,34 @@
-package com.zimolab.monacofx.monaco.editor.event.textmodel.interfaces
+package com.zimolab.monacofx.monaco.editor.options
 
 import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import netscape.javascript.JSObject
 
 /**
  * This class is auto-generated from
- * "com.zimolab.monacofx.monaco.editor.event.textmodel.interfaces.IModelOptionsChangedEvent".It may be
- * overwritten at any time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it
- * with your own implementation.
- * @2021-08-02T01:28:50.231864
+ * "com.zimolab.monacofx.monaco.editor.options.TextModelResolvedOptions".It may be overwritten at any
+ * time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it with your own
+ * implementation.
+ * @2021-08-02T01:28:50.235865400
  */
-public abstract class AbstractIModelOptionsChangedEvent(
+public abstract class AbstractTextModelResolvedOptions(
   public val targetObject: JSObject
-) : IModelOptionsChangedEvent {
-  public override val tabSize: Boolean
+) : TextModelResolvedOptions {
+  public override val tabSize: Int
     get() {
       val result = targetObject.getMember("tabSize")
       if(result == "undefined" || result == null)
           throw RuntimeException("'tabSize' not exists in underlying js object")
-      return result as Boolean
+      return result as Int
     }
 
-  public override val indentSize: Boolean
+  public override val indentSize: Int
     get() {
       val result = targetObject.getMember("indentSize")
       if(result == "undefined" || result == null)
           throw RuntimeException("'indentSize' not exists in underlying js object")
-      return result as Boolean
+      return result as Int
     }
 
   public override val insertSpaces: Boolean
@@ -36,6 +37,14 @@ public abstract class AbstractIModelOptionsChangedEvent(
       if(result == "undefined" || result == null)
           throw RuntimeException("'insertSpaces' not exists in underlying js object")
       return result as Boolean
+    }
+
+  public override val defaultEOL: Int
+    get() {
+      val result = targetObject.getMember("defaultEOL")
+      if(result == "undefined" || result == null)
+          throw RuntimeException("'defaultEOL' not exists in underlying js object")
+      return result as Int
     }
 
   public override val trimAutoWhitespace: Boolean
