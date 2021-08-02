@@ -52,8 +52,12 @@ class ResolvedJsInterface(
         interfaceDeclaration.containingFile
     }
 
-    val superInterfaces: Sequence<KSTypeReference> by lazy {
-        interfaceDeclaration.superTypes
+    val superInterfaces: MutableList<KSType> by lazy {
+        val l = mutableListOf<KSType>()
+        interfaceDeclaration.superTypes.forEach {
+            l.add(it.resolve())
+        }
+        l
     }
 
     val ignoreUnsupportedTypes: Boolean by lazy {

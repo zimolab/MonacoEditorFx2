@@ -11,7 +11,7 @@ annotation class JsInterface(
 ) {
 
     companion object {
-        const val NEW_INSTANCE_FUNCTION = false
+        const val NEW_INSTANCE_FUNCTION = true
         const val IGNORE_UNSUPPORTED_TYPES = true
     }
 }

@@ -1,8 +1,11 @@
 package com.zimolab.monacofx.monaco.editor.event.miscellaneous.interfaces
 
+import com.zimolab.jsobject.annotations.JsInterfaceObject
+import javafx.scene.web.WebEngine
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.String
+import kotlin.reflect.KFunction
 import netscape.javascript.JSObject
 
 /**
@@ -10,11 +13,11 @@ import netscape.javascript.JSObject
  * "com.zimolab.monacofx.monaco.editor.event.miscellaneous.interfaces.IPasteEvent".It may be
  * overwritten at any time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it
  * with your own implementation.
- * @2021-08-02T01:28:50.189859700
+ * @2021-08-02T11:32:17.537265700
  */
 public abstract class AbstractIPasteEvent(
-  public val targetObject: JSObject
-) : IPasteEvent {
+  public override val targetObject: JSObject
+) : IPasteEvent, JsInterfaceObject {
   public override val range: Any
     get() {
       val result = targetObject.getMember("range")
@@ -33,5 +36,26 @@ public abstract class AbstractIPasteEvent(
 
   public open fun exists(name: String): Boolean = targetObject.getMember(name) != "undefined"
 
-  public companion object
+  public companion object {
+    public inline fun <reified T : IPasteEvent> new(
+      webEngine: WebEngine,
+      jsCode: String,
+      vararg args: Any
+    ): T? {
+      val clz = T::class
+      if (clz.isAbstract)
+          throw InstantiationError("abstract class can not be instantiated")
+      var c:KFunction<*>? = null
+      clz.constructors.forEach {
+          if (it.parameters.size == (args.size + 2))
+              c = it
+      }
+      if(c == null)
+          throw InstantiationError("constructor parameters not match")
+      val targetObject = webEngine.executeScript(jsCode)
+      if(targetObject == "undefined" || targetObject !is JSObject)
+          return null
+      return c?.call(targetObject as JSObject, webEngine, *args) as? T
+    }
+  }
 }

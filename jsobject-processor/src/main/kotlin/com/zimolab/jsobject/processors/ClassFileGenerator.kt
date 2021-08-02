@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.KSPLogger
+import com.google.devtools.ksp.symbol.KSType
 import com.squareup.kotlinpoet.*
 import com.zimolab.jsobject.asTypeName
 import com.zimolab.jsobject.processors.JsInterfaceProcessor.Companion.OPTION_NAME_OUTCLASS_PREFIX
@@ -13,6 +14,7 @@ import javafx.scene.web.WebEngine
 import netscape.javascript.JSObject
 import java.io.OutputStream
 import java.time.LocalDateTime
+import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 
 object ClassFileGenerator {
@@ -37,7 +39,7 @@ object ClassFileGenerator {
         initialized = true
     }
 
-    fun submit(resolvedJsInterface: ResolvedJsInterface): ListenableFuture<Unit>? {
+    fun submit(resolvedJsInterface: ResolvedJsInterface, superInterface: KClass<*>): ListenableFuture<Unit>? {
         if (!initialized)
             throw RuntimeException("JsClassFileGenerator is not initialized")
         if (OPTION_NAME_OUTCLASS_PREFIX in options.keys ||
@@ -49,15 +51,17 @@ object ClassFileGenerator {
 
         FileGeneratorTask(
             resolvedJsInterface,
+            superInterface,
             codeGenerator,
             logger,
-            options
+            options,
         ).call()
         return null
     }
 
     class FileGeneratorTask(
         private val resolvedJsInterface: ResolvedJsInterface,
+        private val superInterface: KClass<*>,
         private val codeGenerator: CodeGenerator,
         private val logger: KSPLogger,
         private val options: Map<String, String>
@@ -157,7 +161,6 @@ object ClassFileGenerator {
         fun createClass(): TypeSpec {
             val generatedClassName = resolvedJsInterface.outputClassName
             val packageName = resolvedJsInterface.packageName
-            val superInterface = resolvedJsInterface.ksType.asTypeName()
             val companionObjectBuilder = TypeSpec.companionObjectBuilder()
 
             val className = ClassName(packageName, generatedClassName)
@@ -166,7 +169,7 @@ object ClassFileGenerator {
             val classBuilder = TypeSpec
                 .classBuilder(className) // 类名
                 .addModifiers(KModifier.ABSTRACT) // 设置为抽象类
-                .addSuperinterface(superInterface) // 实现被注解的接口
+            addSuperInterfaces(classBuilder)
             // 添加注释
             addNotes(classBuilder)
             // 创建构造函数
@@ -183,6 +186,12 @@ object ClassFileGenerator {
             classBuilder.addType(companionObjectBuilder.build())
 
             return classBuilder.build()
+        }
+
+        private fun addSuperInterfaces(classBuilder: TypeSpec.Builder) {
+            val self = resolvedJsInterface.ksType.asTypeName()
+            classBuilder.addSuperinterface(self) // 实现被注解的接口本身
+            classBuilder.addSuperinterface(superinterface = superInterface) // 实现JsInterfaceObject接口
         }
 
         fun createFile(clazz: TypeSpec): FileSpec {
@@ -204,6 +213,7 @@ object ClassFileGenerator {
             classBuilder.primaryConstructor(pConstructor)
                 .addProperty(
                     PropertySpec.builder(PROP_NAME_TARGET_OBJECT, JSObject::class)
+                        .addModifiers(KModifier.OVERRIDE)
                         .initializer(PROP_NAME_TARGET_OBJECT)
                         .build()
                 )

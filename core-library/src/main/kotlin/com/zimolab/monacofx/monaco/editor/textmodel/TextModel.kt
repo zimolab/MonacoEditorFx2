@@ -182,15 +182,15 @@ class TextModel(val model: JSObject,
         TODO()
     }
 
-    fun getValueInRange(range: RangeObject, eol: Int): String {
+    fun getValueInRange(range: IRange, eol: Int): String {
         TODO()
     }
 
-    fun getValueLengthInRange(range: RangeObject): Int {
+    fun getValueLengthInRange(range: IRange): Int {
         TODO()
     }
 
-    fun getCharacterCountInRange(range: RangeObject): Int {
+    fun getCharacterCountInRange(range: IRange): Int {
         TODO()
     }
 

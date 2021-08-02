@@ -9,6 +9,8 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSVisitorVoid
 import com.google.devtools.ksp.validate
 import com.zimolab.jsobject.annotations.JsInterface
+import com.zimolab.jsobject.annotations.JsInterfaceObject
+import com.zimolab.jsobject.asKSType
 import com.zimolab.jsobject.findAnnotations
 import com.zimolab.jsobject.packageNameStr
 import com.zimolab.jsobject.qualifiedNameStr
@@ -35,14 +37,14 @@ class JsInterfaceProcessor(
         symbols.filter { it.validate() }.forEach { ksAnnotated ->
             if (ksAnnotated.classKind != ClassKind.INTERFACE)
                 throw AnnotationProcessingError("@${JsInterface::class.simpleName} can only be applied on interfaces.")
-            ksAnnotated.accept(JsInterfaceVisitor(), Unit)
+            ksAnnotated.accept(JsInterfaceVisitor(resolver), Unit)
         }
 
         return symbols.filter { !it.validate() }.toList()
 
     }
 
-    inner class JsInterfaceVisitor : KSVisitorVoid() {
+    inner class JsInterfaceVisitor(val resolver: Resolver) : KSVisitorVoid() {
         lateinit var interfaceName: String
         lateinit var packageName: String
         lateinit var resolvedJsInterface: ResolvedJsInterface
@@ -65,7 +67,9 @@ class JsInterfaceProcessor(
             classDeclaration.getDeclaredFunctions().asSequence().forEach {
                 resolvedJsInterface.addJsFunction(it)
             }
-            ClassFileGenerator.submit(resolvedJsInterface)
+            val superInterface = JsInterfaceObject::class
+
+            ClassFileGenerator.submit(resolvedJsInterface, superInterface)
         }
     }
 

@@ -1,6 +1,7 @@
 package com.zimolab.jsobject
 
 import com.google.devtools.ksp.getAllSuperTypes
+import com.google.devtools.ksp.getClassDeclarationByName
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.*
 import com.squareup.kotlinpoet.ClassName
@@ -15,6 +16,7 @@ fun KClass<*>.asKSType(resolver: Resolver) =
     resolver
         .getClassDeclarationByName(resolver.getKSNameFromString(this.qualifiedName!!))
         ?.asType(emptyList())
+
 
 infix fun KSClassDeclaration.subclassOf(superclass: KClass<out Any>): Boolean {
     return this.getAllSuperTypes().any { it.declaration.qualifiedName?.asString() == superclass.qualifiedName }

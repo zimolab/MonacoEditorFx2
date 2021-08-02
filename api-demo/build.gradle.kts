@@ -23,6 +23,7 @@ dependencies {
     implementation("com.alibaba:fastjson:1.2.76")
     implementation("com.sun.webkit:webview-deps:1.3.2")
     implementation ("no.tornado:tornadofx:$tornadofx_version")
+    implementation(project(":jsobject-processor"))
 }
 
 tasks.getByName<Test>("test") {

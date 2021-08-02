@@ -3,6 +3,7 @@ package com.zimolab.monacofx.monaco.editor
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
+import com.zimolab.jsobject.annotations.JsInterfaceObject
 import com.zimolab.monacofx.MonacoEditorFx
 import com.zimolab.monacofx.jsbase.JsArray
 import com.zimolab.monacofx.jsbase.JsBridge
@@ -11,7 +12,8 @@ import com.zimolab.monacofx.jsbase.invoke
 import com.zimolab.monacofx.monaco.Globals.JS_EDITOR_NAMESPACE
 import com.zimolab.monacofx.monaco.Globals.JS_EXCEPTION
 import com.zimolab.monacofx.monaco.IPosition
-import com.zimolab.monacofx.monaco.RangeObject
+import com.zimolab.monacofx.monaco.IRange
+import com.zimolab.monacofx.monaco.ISelection
 import com.zimolab.monacofx.monaco.editor.event.cursor.CursorPositionChangedEvent
 import com.zimolab.monacofx.monaco.editor.event.cursor.CursorSelectionChangedEvent
 import com.zimolab.monacofx.monaco.editor.event.editor.EditorEvents
@@ -109,7 +111,9 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         const val REVEAL_RANGE_NEAR_TOP_IF_OUTSIDE_VIEWPORT = "revealRangeNearTopIfOutsideViewport"
         const val SET_POSITION = "$JS_EDITOR_ID.setPosition(%s)"
         const val SET_SELECTION = "$JS_EDITOR_ID.setSelection(%s)"
+        const val SET_SELECTION_JS_OBJ = "setSelection"
         const val SET_SELECTIONS = "$JS_EDITOR_ID.setSelections(%s)"
+        const val SET_SELECTIONS_JS_OBJ = "setSelections"
         const val SET_VALUE = "setValue"
         const val TRIGGER = "trigger"
         const val EXECUTE_EDITS = "$JS_EDITOR_ID.executeEdits(%s, %s, %s)"
@@ -704,26 +708,43 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @param selections Array<ISelection>
      * @return Boolean
      */
-    fun setSelections(selections: Array<SelectionObject>): Boolean {
+    fun setSelections(selections: Array<ISelection>): Boolean {
         return execute(JSCODE.SET_SELECTIONS.format(JSON.toJSONString(selections))) == true
     }
 
     /**
      *
-     * @param selection RangeObject
+     * @param selections JsArray
      * @return Boolean
      */
-    fun setSelection(selection: RangeObject): Boolean {
-        return execute(JSCODE.SET_SELECTION.format(JSON.toJSONString(selection))) == true
+    fun setSelections(selections: JsArray): Boolean {
+       return invoke(JSCODE.SET_SELECTIONS, selections.source) == true
     }
 
     /**
      *
-     * @param selection SelectionObject
+     * @param selection IRange
      * @return Boolean
      */
-    fun setSelection(selection: SelectionObject): Boolean {
-        return execute(JSCODE.SET_SELECTION.format(JSON.toJSONString(selection))) == true
+    fun setSelection(selection: IRange): Boolean {
+        return if (selection is JsInterfaceObject) {
+            invoke(JSCODE.SET_SELECTION_JS_OBJ, selection.targetObject) == true
+        } else {
+            execute(JSCODE.SET_SELECTION.format(JSON.toJSONString(selection))) == true
+        }
+    }
+
+    /**
+     *
+     * @param selection ISelection
+     * @return Boolean
+     */
+    fun setSelection(selection: ISelection): Boolean {
+        return if (selection is JsInterfaceObject) {
+            invoke(JSCODE.SET_SELECTION_JS_OBJ, selection.targetObject) == true
+        } else {
+            execute(JSCODE.SET_SELECTION.format(JSON.toJSONString(selection))) == true
+        }
     }
 
     /**
@@ -736,39 +757,31 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         return execute(JSCODE.SET_POSITION.format("""{column:$column, lineNumber:$lineNumber}""")) == true
     }
 
-
     /**
      *
      * @param position IPosition
      * @return Boolean
      */
     fun setPosition(position: IPosition): Boolean {
-        return execute(JSCODE.SET_POSITION.format(JSON.toJSONString(position))) == true
+        return if (position is JsInterfaceObject) {
+            invoke(JSCODE.SET_SELECTION_JS_OBJ, position.targetObject) == true
+        } else {
+            execute(JSCODE.SET_SELECTION.format(JSON.toJSONString(position))) == true
+        }
     }
-
-    /**
-     *
-     * @param value String
-     * @return Boolean
-     */
-    fun setValue(value: String): Boolean {
-        return invoke(JSCODE.SET_VALUE, value) == true
-    }
-
-
 
     /**
      *
      * @param source String?
      * @param edits Array<IIdentifiedSingleEditOperation>
-     * @param endCursorState Array<SelectionObject>?
+     * @param endCursorState Array<ISelection>?
      * @return Boolean
      */
-    fun executeEdits(source: String?, edits: Array<IIdentifiedSingleEditOperation>, endCursorState: Array<SelectionObject>?): Boolean {
+    fun executeEdits(source: String?, edits: Array<IIdentifiedSingleEditOperation>, endCursorState: Array<ISelection>?): Boolean {
         return if (endCursorState == null) {
-            invoke(JSCODE.EXECUTE_EDITS.format(source, JSON.toJSONString(edits), "undefined"))
+            execute(JSCODE.EXECUTE_EDITS.format(source, JSON.toJSONString(edits), "undefined"))
         } else {
-            invoke(JSCODE.EXECUTE_EDITS.format(source, JSON.toJSONString(edits), JSON.toJSONString(endCursorState)))
+            execute(JSCODE.EXECUTE_EDITS.format(source, JSON.toJSONString(edits), JSON.toJSONString(endCursorState)))
         } == true
     }
 
