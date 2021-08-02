@@ -189,13 +189,13 @@ open class JsArray(val source: JSObject) {
     }
 
     fun jsFor(callback: JsArrayForCallback, startIndex: Int = 0, stopIndex: Int = -1, step: Int = 1) {
-        val _stopIndex = if (stopIndex <= 0)
+        val stop = if (stopIndex <= 0)
             length
         else
             stopIndex
         inject(source, "for", callback) { source, method ->
             val jsCode = """
-            for(let i=${startIndex}; i < ${_stopIndex}; i = i + $step) {
+            for(let i=${startIndex}; i < ${stop}; i = i + $step) {
                 if(!${method}(i, this[i])) break
             }
         """.trimIndent()
@@ -256,18 +256,16 @@ open class JsArray(val source: JSObject) {
             throw  JsFunctionInvokeException("failed to invoke function 'some()' on a js Array object")
     }
 
-    fun reduce(callback: JsArrayReduceCallback): Any {
-        source.setMember("__reduce", callback)
-        val result = source.eval("this.reduce((total,current, index, arr)=>{return this.__reduce.call(total, current, index, arr)})")
-        source.removeMember("__reduce")
-        return result
+    fun reduce(callback: JsArrayReduceCallback): Any? {
+        return inject(source, "reduce", callback) { source, method->
+            source.eval("this.reduce((total,current, index, arr)=>{ return ${method}(total,current, index, arr)})")
+        }
     }
 
-    fun reduceRight(callback: JsArrayReduceCallback): Any {
-        source.setMember("__reduceRight", callback)
-        val result = source.eval("this.reduceRight((total,current, index, arr)=>{return this.__reduceRight.call(total, current, index, arr)})")
-        source.removeMember("__reduceRight")
-        return result
+    fun reduceRight(callback: JsArrayReduceCallback): Any? {
+        return inject(source, "reduceRight", callback) { source, method->
+            source.eval("this.reduceRight((total,current, index, arr)=>{ return ${method}(total,current, index, arr)})")
+        }
     }
 
     override fun toString(): String {
@@ -328,6 +326,5 @@ object Undefined {
     }
 }
 
-class JsValueTypeException(msg: String="value type is not as expected"): RuntimeException(msg)
 class NotAnJsArrayException(msg: String="this js object is not a js Array") : RuntimeException(msg)
 class JsFunctionInvokeException(msg: String): RuntimeException(msg)
