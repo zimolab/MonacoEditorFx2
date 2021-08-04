@@ -5,6 +5,10 @@
 ## core-library模块
 核心功能的实现，对外提供各功能模块的API。
 
+### 主要API
+主要API定义在[MonacoEditorFx.kt](core-library/src/main/kotlin/com/zimolab/monacofx/MonacoEditorFx.kt)、[MonacoEditor.kt](core-library/src/main/kotlin/com/zimolab/monacofx/monaco/editor/MonacoEditor.kt)、[TextModel.kt](core-library/src/main/kotlin/com/zimolab/monacofx/monaco/editor/textmodel/TextModel.kt)等文件中。
+可以参考其中公开的接口。
+
 ### src/main/resources/dist
 这个目录下是web层面的Monaco Editor所需的静态资源，包括js、html、css、字体文件等等资源。 使用JS/TS编写的从web到kotlin的中间层代码也被打包到此目录下的monacofx.bundle.js文件中。
 web层面的实现，特别是TS/JS编写的中间层代码在[这个仓库](https://github.com/zimolab/monacofx-js) 。
