@@ -14,7 +14,7 @@ import netscape.javascript.JSObject
  * "com.zimolab.monacofx.monaco.editor.event.miscellaneous.interfaces.IEditorLayoutInfo".It may be
  * overwritten at any time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it
  * with your own implementation.
- * @2021-08-04T23:38:07.421703800
+ * @2021-08-04T23:44:29.489234300
  */
 public abstract class AbstractIEditorLayoutInfo(
   public override val targetObject: JSObject

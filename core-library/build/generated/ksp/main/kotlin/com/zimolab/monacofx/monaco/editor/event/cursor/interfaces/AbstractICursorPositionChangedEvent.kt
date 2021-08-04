@@ -14,7 +14,7 @@ import netscape.javascript.JSObject
  * "com.zimolab.monacofx.monaco.editor.event.cursor.interfaces.ICursorPositionChangedEvent".It may be
  * overwritten at any time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it
  * with your own implementation.
- * @2021-08-04T23:38:07.376703500
+ * @2021-08-04T23:44:29.451221100
  */
 public abstract class AbstractICursorPositionChangedEvent(
   public override val targetObject: JSObject

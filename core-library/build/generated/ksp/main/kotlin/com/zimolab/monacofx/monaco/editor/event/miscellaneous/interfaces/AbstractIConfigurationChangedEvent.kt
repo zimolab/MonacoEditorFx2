@@ -14,7 +14,7 @@ import netscape.javascript.JSObject
  * "com.zimolab.monacofx.monaco.editor.event.miscellaneous.interfaces.IConfigurationChangedEvent".It
  * may be overwritten at any time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from
  * it with your own implementation.
- * @2021-08-04T23:38:07.448727300
+ * @2021-08-04T23:44:29.510226100
  */
 public abstract class AbstractIConfigurationChangedEvent(
   public override val targetObject: JSObject
