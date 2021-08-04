@@ -1,8 +1,8 @@
 package com.zimolab.monacofx.monaco.editor.textmodel.interfaces
 
 interface ITextModelUpdateOptions {
-    var tabSize: Int?
-    var indentSize: Int?
-    var insertSpaces: Boolean?
-    var trimAutoWhitespace: Boolean?
+    val tabSize: Int?
+    val indentSize: Int?
+    val insertSpaces: Boolean?
+    val trimAutoWhitespace: Boolean?
 }

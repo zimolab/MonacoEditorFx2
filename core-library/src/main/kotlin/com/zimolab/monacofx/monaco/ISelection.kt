@@ -26,8 +26,14 @@ interface ISelection {
     @JsFunction
     fun setStartPosition(startLineNumber: Int, startColumn: Int): Any
 
+    fun toRange(): IRange
+
     companion object {
-        fun dataObject(
+        fun fromRange(range: IRange): ISelection {
+            return selectionOf(range.startLineNumber, range.startColumn, range.endLineNumber, range.endColumn)
+        }
+
+        fun selectionOf(
             selectionStartLineNumber: Int,
             selectionStartColumn: Int,
             positionLineNumber: Int,
@@ -60,6 +66,15 @@ interface ISelection {
                     TODO("Not yet implemented")
                 }
 
+                override fun toRange(): IRange {
+                    return IRange.rangeOf(selectionStartLineNumber, selectionStartColumn, positionLineNumber, positionColumn)
+                }
+
+                override fun toString(): String {
+                    return "Selection@" +
+                            "[$selectionStartLineNumber, $selectionStartColumn -> " +
+                            "$positionLineNumber, $positionColumn]"
+                }
             }
         }
     }

@@ -1,8 +1,8 @@
 package com.zimolab.monacofx.monaco
 
 object Globals {
-    const val JS_GLOBAL_OBJECT_ID = "window"
-    const val JS_EDITOR_NAMESPACE = "$JS_GLOBAL_OBJECT_ID.ME"
+    const val JS_GLOBAL_OBJECT = "window"
+    const val JS_EDITOR_NAMESPACE = "$JS_GLOBAL_OBJECT.ME"
     const val JS_HOST_ENV_READY_EVENT = "fireHostEnvReadyEvent"
     const val JS_CHECK_INTERVAL = 100L
     const val DEFAULT_LOAD_TIMEOUT = 5000L

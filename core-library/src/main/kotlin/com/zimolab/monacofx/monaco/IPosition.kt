@@ -18,7 +18,7 @@ interface IPosition {
     fun isBeforeOrEqual(other: Any): Boolean
 
     companion object {
-        fun dataObject(column: Int, lineNumber: Int): IPosition {
+        fun positionOf(column: Int, lineNumber: Int): IPosition {
             return object : IPosition{
                 override val column: Int = column
                 override val lineNumber: Int = lineNumber

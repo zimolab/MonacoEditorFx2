@@ -13,7 +13,7 @@ import netscape.javascript.JSObject
  * "com.zimolab.monacofx.monaco.editor.event.textmodel.interfaces.IModelDecorationsChangedEvent".It may
  * be overwritten at any time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it
  * with your own implementation.
- * @2021-08-02T11:32:17.587264100
+ * @2021-08-04T12:34:05.994147300
  */
 public abstract class AbstractIModelDecorationsChangedEvent(
   public override val targetObject: JSObject

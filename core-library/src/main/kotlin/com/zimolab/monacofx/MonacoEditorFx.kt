@@ -5,10 +5,10 @@ import com.zimolab.monacofx.monaco.Globals.DEFAULT_LOAD_TIMEOUT
 import com.zimolab.monacofx.monaco.Globals.DEFAULT_MONACO_EDITOR_INDEX
 import com.zimolab.monacofx.monaco.Globals.ILLEGAL_JS_ID_EXCEPTION
 import com.zimolab.monacofx.monaco.Globals.JS_EXCEPTION
-import com.zimolab.monacofx.monaco.Globals.JS_GLOBAL_OBJECT_ID
+import com.zimolab.monacofx.monaco.Globals.JS_GLOBAL_OBJECT
 import com.zimolab.monacofx.monaco.Globals.JS_HOST_ENV_READY_EVENT
 import com.zimolab.monacofx.monaco.editor.MonacoEditor
-import com.zimolab.monacofx.monaco.editor.MonacoEditor.Companion.JS_EDITOR_ID
+import com.zimolab.monacofx.monaco.editor.MonacoEditor.Companion.JS_EDITOR
 import com.zimolab.monacofx.monaco.Globals.JS_UNDEFINED
 import com.zimolab.monacofx.monaco.editor.options.IStandaloneEditorConstructionOptions
 import com.zimolab.monacofx.util.Logger
@@ -168,6 +168,7 @@ class MonacoEditorFx(
         if (currentLoadWorker.isRunning || preparingMonacoEditor.get()) {
             return
         }
+        dispose()
 
         if (useDefaultMonacoEditorImpl) {
             // 使用默认的MonacoEditor实现
@@ -189,7 +190,7 @@ class MonacoEditorFx(
         // 这需要通过调用页面中的js代码实现
         preparingMonacoEditor.set(true)
         // 先拿到js中的全局对象，在浏览器环境中这个对象是window
-        val globalObject = webEngine.execute(JS_GLOBAL_OBJECT_ID)
+        val globalObject = webEngine.execute(JS_GLOBAL_OBJECT)
         if (globalObject is JSException) {
             afterLoad(false, JS_EXCEPTION to globalObject)
             return
@@ -220,7 +221,7 @@ class MonacoEditorFx(
             while (!ready.get() && (System.currentTimeMillis() - startTime < loadTimeout)) { // 继续循环的条件：js未准备好 且（&&）未超时
                 // 所有js调用操作必须在主线程进行，所以切换回主线程
                 launch(Dispatchers.Main) checkJs@{
-                    val obj = webEngine.execute(JS_EDITOR_ID)
+                    val obj = webEngine.execute(JS_EDITOR)
 
                     if (obj is String && obj == JS_UNDEFINED) {
                         return@checkJs
@@ -312,5 +313,12 @@ class MonacoEditorFx(
             positionHorizontal,
             positionVertical
         )
+    }
+
+    fun dispose() {
+        if(editor.dispose()) {
+            editorReadyPropertyWrapper.set(false)
+            editor.jsEditor = null
+        }
     }
 }

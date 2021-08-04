@@ -1,7 +1,10 @@
 package com.zimolab.monacofx.monaco.editor.textmodel.interfaces
 
+import com.zimolab.jsobject.annotations.JsInterface
+
+@JsInterface
 interface IWordAtPosition {
-    var word: String
-    var startColumn: Int
-    var endColumn: Int
+    val word: String
+    val startColumn: Int
+    val endColumn: Int
 }

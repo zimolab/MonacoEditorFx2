@@ -48,7 +48,7 @@ class DemoView : View("MonacoEditorFx Demo") {
 //        monacoEditorFx.editor.setOnLostFocusListener {
 //            println("lost focus")
 //        }
-            monacoEditorFx.editor.textModel.onDidChangeContent { eventId, event->
+            monacoEditorFx.editor.textModel?.onDidChangeContent { eventId, event->
                 println("content change")
                 println(ModelContentChange(event.changes[0] as JSObject).text)
             }
@@ -102,6 +102,7 @@ class DemoView : View("MonacoEditorFx Demo") {
 
     fun onButtonTest1Action() {
         if(monacoEditorFx.editorReadyProperty.value) {
+            monacoEditorFx.dispose()
         }
     }
 

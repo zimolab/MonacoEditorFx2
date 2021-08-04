@@ -28,12 +28,13 @@ class Selection(jsObject: JSObject): AbstractISelection(jsObject) {
         return Position(result)
     }
 
-    /**
-     * Returns a string representation of the object.
-     */
+    override fun toRange(): IRange {
+        return IRange.rangeOf(selectionStartLineNumber, selectionStartColumn, positionLineNumber, positionColumn)
+    }
+
     override fun toString(): String {
-        return "selection@" +
-                "[$selectionStartColumn, $selectionStartLineNumber -> " +
-                "$positionColumn, $positionLineNumber]"
+        return "Selection@" +
+                "[$selectionStartLineNumber, $selectionStartColumn -> " +
+                "$positionLineNumber, $positionColumn]"
     }
 }

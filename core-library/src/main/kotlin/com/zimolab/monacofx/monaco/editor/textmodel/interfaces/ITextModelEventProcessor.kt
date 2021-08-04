@@ -7,3 +7,4 @@ interface ITextModelEventProcessor {
     fun unlisten(eventId: Int)
     fun isListened(eventId: Int): Boolean
 }
+

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright (c) 2015, 2019, Gluon and/or its affiliates.
+  All rights reserved. Use is subject to license terms.
+
+  This file is available and licensed under the following license:
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the distribution.
+  - Neither the name of Oracle Corporation nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+  <children>
+    <MenuBar VBox.vgrow="NEVER">
+      <menus>
+        <Menu mnemonicParsing="false" text="File">
+          <items>
+            <MenuItem mnemonicParsing="false" text="New" />
+            <MenuItem mnemonicParsing="false" text="Open…" />
+            <Menu mnemonicParsing="false" text="Open Recent" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Close" />
+            <MenuItem mnemonicParsing="false" text="Save" />
+            <MenuItem mnemonicParsing="false" text="Save As…" />
+            <MenuItem mnemonicParsing="false" text="Revert" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Preferences…" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Quit" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Edit">
+          <items>
+            <MenuItem mnemonicParsing="false" text="Undo" />
+            <MenuItem mnemonicParsing="false" text="Redo" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Cut" />
+            <MenuItem mnemonicParsing="false" text="Copy" />
+            <MenuItem mnemonicParsing="false" text="Paste" />
+            <MenuItem mnemonicParsing="false" text="Delete" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Select All" />
+            <MenuItem mnemonicParsing="false" text="Unselect All" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" text="About" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+    <SplitPane dividerPositions="0.2117097061442564, 0.7860641139804095" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+      <items>
+      <AnchorPane id="Content" fx:id="leftPane" maxWidth="-Infinity" minHeight="-1.0" minWidth="-1.0">
+               <children>
+                  <FlowPane hgap="10.0" vgap="10.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="10.0">
+                     <children>
+                        <Button fx:id="reloadButton" mnemonicParsing="false" onAction="#onReloadButtonAction" text="Reload">
+                           <FlowPane.margin>
+                              <Insets />
+                           </FlowPane.margin>
+                        </Button>
+                        <ChoiceBox fx:id="languageChoiceBox" prefWidth="150.0" />
+                        <ChoiceBox fx:id="themeChoiceBox" prefWidth="150.0" />
+                        <Button fx:id="getOptionsButton" mnemonicParsing="false" onAction="#onGetOptionsButtonAction" text="Get Options" />
+                        <Button mnemonicParsing="false" onAction="#onGetVersionIdButtonAction" text="Get Version ID" />
+                        <Button mnemonicParsing="false" onAction="#onGetInfoButtonAction" text="Get Info" />
+                     </children>
+                  </FlowPane>
+               </children>
+      </AnchorPane>
+            <VBox fx:id="centerPane" alignment="CENTER" prefHeight="559.0" prefWidth="408.0" />
+        <AnchorPane fx:id="rightPane" maxWidth="-Infinity">
+               <children>
+                  <VBox layoutX="61.0" layoutY="53.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <TextArea fx:id="plainTextArea" VBox.vgrow="SOMETIMES" />
+                        <TextArea fx:id="outputTextArea" prefHeight="200.0" prefWidth="200.0" />
+                        <FlowPane columnHalignment="CENTER" hgap="5.0" vgap="10.0">
+                           <children>
+                              <Button fx:id="getValueButton" mnemonicParsing="false" onAction="#onGetValueButtonAction" text="GetValue" />
+                              <Button fx:id="setValueButton" mnemonicParsing="false" onAction="#onSetValueButtonAction" text="SetValue" />
+                              <CheckBox fx:id="onContentChangeCheckBox" mnemonicParsing="false" onAction="#onContentChangeCheckBoxAction" text="onContentChange" />
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="5.0" top="5.0" />
+                           </VBox.margin>
+                           <padding>
+                              <Insets left="5.0" right="5.0" />
+                           </padding>
+                           <opaqueInsets>
+                              <Insets left="5.0" right="5.0" />
+                           </opaqueInsets>
+                        </FlowPane>
+                     </children>
+                  </VBox>
+               </children>
+        </AnchorPane>
+      </items>
+    </SplitPane>
+      <BorderPane prefHeight="15.0" VBox.vgrow="NEVER">
+         <left>
+            <Label fx:id="leftStatusLabel" text="Left Status" textFill="#9f9f9f" BorderPane.alignment="CENTER" />
+         </left>
+         <right>
+            <Label fx:id="rightStatusLabel" text="Right Status" textFill="#9f9f9f" BorderPane.alignment="CENTER" />
+         </right>
+         <center>
+            <Label fx:id="centerStatusLabel" text="Center Status" textFill="#9f9f9f" BorderPane.alignment="CENTER" />
+         </center>
+      </BorderPane>
+  </children>
+</VBox>

@@ -3,7 +3,7 @@ package com.zimolab.monacofx.monaco.editor.options
 import com.zimolab.jsobject.annotations.JsInterface
 
 @JsInterface
-interface TextModelResolvedOptions {
+interface ITextModelResolvedOptions {
      val _textModelResolvedOptionsBrand: Unit
      val tabSize: Int
      val indentSize: Int
@@ -11,3 +11,4 @@ interface TextModelResolvedOptions {
      val defaultEOL: Int
      val trimAutoWhitespace: Boolean
 }
+

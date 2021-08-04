@@ -1,6 +1,5 @@
 package com.zimolab.monacofx.monaco
 
-import com.zimolab.monacofx.monaco.AbstractIRange
 import com.zimolab.monacofx.monaco.Globals.JS_UNDEFINED
 import netscape.javascript.JSObject
 
@@ -76,8 +75,11 @@ class Range(jsObject: JSObject): AbstractIRange(jsObject) {
         throw RuntimeException("fail to call js function 'Range.collapseToStart()'")
     }
 
+    override fun toSelection(): ISelection {
+        return ISelection.selectionOf(startLineNumber, startColumn, endLineNumber, endColumn)
+    }
 
     override fun toString(): String {
-        return "[$startColumn, $startLineNumber -> $endColumn, $endLineNumber]"
+        return "Range@[$startLineNumber, $startColumn -> $endLineNumber, $endColumn]"
     }
 }

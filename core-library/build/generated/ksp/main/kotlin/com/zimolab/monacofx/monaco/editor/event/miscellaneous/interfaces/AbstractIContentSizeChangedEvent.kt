@@ -14,7 +14,7 @@ import netscape.javascript.JSObject
  * "com.zimolab.monacofx.monaco.editor.event.miscellaneous.interfaces.IContentSizeChangedEvent".It may
  * be overwritten at any time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it
  * with your own implementation.
- * @2021-08-02T11:32:17.530252400
+ * @2021-08-04T12:34:05.938133700
  */
 public abstract class AbstractIContentSizeChangedEvent(
   public override val targetObject: JSObject
