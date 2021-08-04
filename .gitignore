@@ -1,0 +1,7 @@
+.gradle
+.idea
+build
+./api-demo/build
+./core-library/build
+./jsobject-processor/build
+.gitignore
