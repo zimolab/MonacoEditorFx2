@@ -10,8 +10,8 @@
 可以参考其中公开的接口。
 
 ### src/main/resources/dist
-这个目录下是web层面的Monaco Editor所需的静态资源，包括js、html、css、字体文件等等资源。 使用JS/TS编写的从web到kotlin的中间层代码也被打包到此目录下的monacofx.bundle.js文件中。
-web层面的实现，特别是TS/JS编写的中间层代码在[这个仓库](https://github.com/zimolab/monacofx-js) 。
+该目录下储存了Monaco Editor（web层面）所需的全部静态资源，包括js、html、css、字体文件等等资源。 使用JS/TS编写的的中间层代码被打包到此目录下的monacofx.bundle.js文件中。
+Web层面的实现（特别是使用TS/JS编写的中间层的原始代码）可以在[这个仓库](https://github.com/zimolab/monacofx-js) 找到。
 
 ## api-demo模块
 作为对core-library中的API的演示。同时也演示了在JavaFx中使用MonacoEditorFx控件的基本方式。
