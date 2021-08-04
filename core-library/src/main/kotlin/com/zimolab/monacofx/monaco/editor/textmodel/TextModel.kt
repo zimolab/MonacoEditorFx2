@@ -9,6 +9,7 @@ import com.zimolab.monacofx.monaco.*
 import com.zimolab.monacofx.monaco.editor.MonacoEditor
 import com.zimolab.monacofx.monaco.editor.enums.EndOfLinePreference
 import com.zimolab.monacofx.monaco.editor.enums.EndOfLineSequence
+import com.zimolab.monacofx.monaco.editor.event.EventBridge
 import com.zimolab.monacofx.monaco.editor.event.textmodel.*
 import com.zimolab.monacofx.monaco.editor.options.IIdentifiedSingleEditOperation
 import com.zimolab.monacofx.monaco.editor.textmodel.interfaces.*
@@ -18,7 +19,7 @@ import kotlin.collections.set
 class TextModel(
     val model: JSObject,
     val monacoEditor: MonacoEditor
-) : JsBridge, ITextModelEventProcessor {
+) : JsBridge {
 
     init {
         getReady()
@@ -78,6 +79,10 @@ class TextModel(
         const val IS_ATTACHED_TO_EDITOR = "isAttachedToEditor"
     }
 
+    private val eventBridge by lazy {
+        EventBridge(model)
+    }
+
     override fun getJavascriptName(): String = NAME_IN_JS
     override fun getDescription(): String = DESCRIPTION
 
@@ -109,30 +114,33 @@ class TextModel(
     //////////////////////////////////////////////////////////////////
 
     //////////////////////////桥接JS层面ITextModel的事件////////////////
-    private val eventMap = mutableMapOf<Int, TextModelEventListener>()
-
-    override fun listen(eventId: Int, callback: TextModelEventListener) {
-        if (eventId in eventMap.keys) {
-            eventMap.remove(eventId)
-        }
-        eventMap[eventId] = callback
-    }
-
-    override fun unlisten(eventId: Int) {
-        if (eventId in eventMap.keys) {
-            eventMap.remove(eventId)
-        }
-    }
-
-    override fun isListened(eventId: Int): Boolean {
-        return eventId in eventMap.keys
-    }
+    private val textModelEvents = mutableMapOf<Int, TextModelEventListener>()
 
     // 该方法在JS层面被调用
     fun onTextModelEvent(eventId: Int, event: Any?) {
-        if (isListened(eventId)) {
-            eventMap[eventId]?.invoke(eventId, event)
+        if (eventId in textModelEvents) {
+            textModelEvents[eventId]?.invoke(eventId, event)
         }
+    }
+
+    fun listen(eventId: Int, callback: TextModelEventListener): Boolean {
+        return if (eventBridge.listen(eventId)) {
+            textModelEvents[eventId] = callback
+            true
+        } else {
+            false
+        }
+    }
+
+    fun unlisten(eventId: Int) {
+        if (eventId in textModelEvents) {
+            textModelEvents.remove(eventId)
+        }
+        eventBridge.unlisten(eventId)
+    }
+
+    fun isListened(eventId: Int): Boolean {
+        return eventBridge.isListened(eventId)
     }
 
     // 将ITextModel中的具体事件映射到kotlin层，以符合语言习惯

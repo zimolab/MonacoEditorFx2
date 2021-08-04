@@ -13,7 +13,7 @@ import netscape.javascript.JSObject
  * This class is auto-generated from "com.zimolab.monacofx.monaco.editor.IViewState".It may be
  * overwritten at any time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it
  * with your own implementation.
- * @2021-08-04T12:34:05.817093800
+ * @2021-08-04T23:38:07.331155100
  */
 public abstract class AbstractIViewState(
   public override val targetObject: JSObject

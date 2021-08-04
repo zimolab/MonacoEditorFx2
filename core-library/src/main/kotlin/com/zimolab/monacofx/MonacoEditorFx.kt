@@ -245,15 +245,15 @@ class MonacoEditorFx(
             launch(Dispatchers.Main) {
                 if (ready.get()) {
                     if(editor.create(createOptions)) {
-                        editor.jsEditor = jsEditor
+                        editor.onJsEditorReady(jsEditor)
                         JsVariableReference.init(webEngine)
                         afterLoad(true)
                     } else {
-                        editor.jsEditor = null
+                        editor.onJsEditorReady(null)
                         afterLoad(false)
                     }
                 } else {
-                    editor.jsEditor = null
+                    editor.onJsEditorReady(null)
                     afterLoad(false)
                 }
             }
@@ -318,7 +318,7 @@ class MonacoEditorFx(
     fun dispose() {
         if(editor.dispose()) {
             editorReadyPropertyWrapper.set(false)
-            editor.jsEditor = null
+            editor.onJsEditorReady(null)
         }
     }
 }

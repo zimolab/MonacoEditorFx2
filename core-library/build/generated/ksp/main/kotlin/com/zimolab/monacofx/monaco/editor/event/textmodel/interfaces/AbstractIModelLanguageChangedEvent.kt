@@ -13,7 +13,7 @@ import netscape.javascript.JSObject
  * "com.zimolab.monacofx.monaco.editor.event.textmodel.interfaces.IModelLanguageChangedEvent".It may be
  * overwritten at any time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it
  * with your own implementation.
- * @2021-08-04T12:34:06.000148200
+ * @2021-08-04T23:38:07.530729500
  */
 public abstract class AbstractIModelLanguageChangedEvent(
   public override val targetObject: JSObject

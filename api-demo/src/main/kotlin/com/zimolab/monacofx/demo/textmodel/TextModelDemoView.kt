@@ -117,7 +117,15 @@ class TextModelDemoView: View("TextModel API Demo") {
     }
 
     fun onContentChangeCheckBoxAction() {
-
+        editorReady {
+            if (onContentChangeCheckBox.isSelected) {
+                monacoEditorFx.editor.textModel?.onDidChangeContent { eventId, event ->
+                    log("内容发生变化")
+                }
+            } else {
+                monacoEditorFx.editor.textModel?.onDidChangeContent(null)
+            }
+        }
     }
 
     /**

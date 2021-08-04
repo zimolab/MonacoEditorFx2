@@ -22,6 +22,7 @@ class DemoView : View("MonacoEditorFx Demo") {
     private val monacoEditorFx: MonacoEditorFx by lazy {
         MonacoEditorFx()
     }
+    private var listen = true
 
     init {
         monacoEditorFx.loadStateProperty.addListener { observable, oldValue, newValue ->
@@ -48,9 +49,16 @@ class DemoView : View("MonacoEditorFx Demo") {
 //        monacoEditorFx.editor.setOnLostFocusListener {
 //            println("lost focus")
 //        }
-            monacoEditorFx.editor.textModel?.onDidChangeContent { eventId, event->
-                println("content change")
-                println(ModelContentChange(event.changes[0] as JSObject).text)
+            if (newValue == true) {
+                println("ready")
+                monacoEditorFx.editor.textModel?.onDidChangeContent { eventId, event->
+                    println("content change")
+                    println(ModelContentChange(event.changes[0] as JSObject).text)
+                }
+
+                monacoEditorFx.editor.onDidPaste { eventId, event ->
+                    println("onPaste(): ${event.range}")
+                }
             }
         }
         monacoEditorFx.internalErrorProperty.addListener { observable, oldValue, newValue ->
@@ -102,7 +110,14 @@ class DemoView : View("MonacoEditorFx Demo") {
 
     fun onButtonTest1Action() {
         if(monacoEditorFx.editorReadyProperty.value) {
-            monacoEditorFx.dispose()
+            if (listen) {
+                monacoEditorFx.editor.onDidPaste { eventId, event ->
+                    println("onPaste(): ${event.range}")
+                }
+            } else {
+                monacoEditorFx.editor.onDidPaste(null)
+            }
+            listen = !listen
         }
     }
 
