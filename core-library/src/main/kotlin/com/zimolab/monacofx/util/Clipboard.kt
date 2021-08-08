@@ -1,6 +1,5 @@
 package com.zimolab.monacofx.util
 
-import com.zimolab.jsobject.annotations.JsInterface
 import com.zimolab.monacofx.jsbase.JsBridge
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
@@ -24,12 +23,10 @@ object Clipboard: JsBridge {
                null
             }
         }
-        println("getContent: $content")
         return content
     }
 
     fun setContent(content: String) {
-        println("setContent: $content")
         sysClipboard.setContents(StringSelection(content), null)
     }
 
