@@ -39,6 +39,10 @@ interface IPosition {
                 override fun isBeforeOrEqual(other: Any): Boolean {
                     TODO("Not yet implemented")
                 }
+
+                override fun toString(): String {
+                    return "Position@($column, $lineNumber)"
+                }
             }
         }
     }

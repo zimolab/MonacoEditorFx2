@@ -18,9 +18,9 @@ class MouseTarget(jsObject: JSObject): AbstractIMouseTarget(jsObject) {
     }
 
 
-    override val position: IPosition
+    override val position: Position
         get() = _position
-    override val range: IRange
+    override val range: Range
         get() = _range
     override val detail: JSObject
         get() = super.detail as JSObject

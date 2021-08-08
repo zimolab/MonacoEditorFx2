@@ -19,7 +19,7 @@ interface IMouseEvent {
     val shiftKey: Boolean
     val altKey: Boolean
     val metaKey: Boolean
-    val timestamp: Int
+    val timestamp: Double
     @JsFunction
     fun preventDefault()
     @JsFunction

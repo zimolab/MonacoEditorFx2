@@ -13,6 +13,7 @@ import com.zimolab.monacofx.monaco.Globals.JS_UNDEFINED
 import com.zimolab.monacofx.monaco.editor.options.IStandaloneEditorConstructionOptions
 import com.zimolab.monacofx.util.Logger
 import com.zimolab.monacofx.jsbase.*
+import com.zimolab.monacofx.util.Clipboard
 import javafx.beans.property.ReadOnlyBooleanProperty
 import javafx.beans.property.ReadOnlyBooleanWrapper
 import javafx.beans.property.ReadOnlyObjectProperty
@@ -34,7 +35,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class MonacoEditorFx(
     private val createOptions: IStandaloneEditorConstructionOptions? = null,
-    customMonacoEditorImpl: InputStream? = null
+    customMonacoEditorImpl: InputStream? = null,
+    autoLoad: Boolean = false
 ) : Region(), CoroutineScope by MainScope() {
 
     enum class LoadState(val value: Int) {
@@ -88,7 +90,7 @@ class MonacoEditorFx(
     private val defaultMonacoEditorImpl = DEFAULT_MONACO_EDITOR_INDEX
     private var customMonacoEditorImpl: InputStream? = null
     private var useDefaultMonacoEditorImpl = true
-    private var jsHostEnvObjects = arrayListOf(Logger, editor)
+    private var jsHostEnvObjects = arrayListOf(Logger, editor, Clipboard)
 
 
     init {
@@ -104,12 +106,12 @@ class MonacoEditorFx(
 
         // WebEngine相关配置
         webEngine.javaScriptEnabledProperty().set(true)
+        webView.contextMenuEnabledProperty().set(false)
         setupInternalErrorHandler()
         setLoadStateHandler()
-        // 首次加载
-        reload()
+        if (autoLoad)
+            reload()
     }
-
 
     private fun setLoadStateHandler() {
         currentLoadWorker.stateProperty().addListener { _, _, currentState ->
@@ -205,6 +207,7 @@ class MonacoEditorFx(
             afterLoad(false)
             return
         }
+
         // 接着发送HOST_ENV_READY_EVENT事件，表明宿主环境已经准备就绪，可以在js调用宿主提供的对象了
         val err = globalObject.invoke(JS_HOST_ENV_READY_EVENT)
         if (err is JSException) {
@@ -247,6 +250,7 @@ class MonacoEditorFx(
                     if(editor.create(createOptions)) {
                         editor.onJsEditorReady(jsEditor)
                         JsVariableReference.init(webEngine)
+                        webView.contextMenuEnabledProperty().set(true)
                         afterLoad(true)
                     } else {
                         editor.onJsEditorReady(null)

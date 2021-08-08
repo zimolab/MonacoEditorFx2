@@ -8,6 +8,6 @@ class KeyBoardEvent(jsObject: JSObject): AbstractIKeyboardEvent(jsObject) {
     private val _browserEvent by lazy {
         BrowserKeyBoardEvent(super.browserEvent as JSObject)
     }
-    override val browserEvent: IBrowserKeyboardEvent
+    override val browserEvent: BrowserKeyBoardEvent
         get() = _browserEvent
 }

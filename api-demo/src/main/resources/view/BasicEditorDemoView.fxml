@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright (c) 2015, 2019, Gluon and/or its affiliates.
+  All rights reserved. Use is subject to license terms.
+
+  This file is available and licensed under the following license:
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the distribution.
+  - Neither the name of Oracle Corporation nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+  <children>
+    <MenuBar VBox.vgrow="NEVER">
+      <menus>
+        <Menu mnemonicParsing="false" text="文件">
+          <items>
+            <MenuItem mnemonicParsing="false" text="新建" />
+            <MenuItem mnemonicParsing="false" text="打开…" />
+            <Menu mnemonicParsing="false" text="最近打开的文件" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="关闭文件" />
+            <MenuItem mnemonicParsing="false" text="保存文件" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="设置" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="退出" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="编辑">
+          <items>
+            <MenuItem mnemonicParsing="false" text="撤销" />
+            <MenuItem mnemonicParsing="false" text="重做" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="剪切" />
+            <MenuItem mnemonicParsing="false" text="复制" />
+            <MenuItem mnemonicParsing="false" text="粘贴" />
+            <MenuItem mnemonicParsing="false" text="删除" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="全选" />
+            <MenuItem mnemonicParsing="false" text="取消全选" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="帮助">
+          <items>
+            <MenuItem mnemonicParsing="false" text="关于" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+      <SplitPane dividerPositions="0.7789804469273742" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" VBox.vgrow="ALWAYS">
+         <items>
+            <VBox>
+               <children>
+                  <SplitPane dividerPositions="0.2332738626226583" VBox.vgrow="ALWAYS">
+                     <items>
+                        <VBox>
+                           <children>
+                              <Accordion VBox.vgrow="ALWAYS">
+                                <panes>
+                                  <TitledPane animated="false" text="基本功能">
+                                       <content>
+                                          <FlowPane hgap="3.0" prefHeight="200.0" prefWidth="200.0" vgap="3.0" />
+                                       </content>
+                                  </TitledPane>
+                                  <TitledPane animated="false" prefHeight="380.0" prefWidth="302.0" text="编辑器事件">
+                                       <content>
+                                          <VBox prefHeight="200.0" prefWidth="100.0">
+                                             <children>
+                                                <CheckBox fx:id="onMouseDown" mnemonicParsing="false" onAction="#onEditorCheckBoxAction" text="onMouseDown" />
+                                                <CheckBox fx:id="onMouseUp" mnemonicParsing="false" onAction="#onEditorCheckBoxAction" text="onMouseUp" />
+                                                <CheckBox fx:id="onMouseMove" mnemonicParsing="false" onAction="#onEditorCheckBoxAction" text="onMouseMove" />
+                                                <CheckBox fx:id="onMouseLeave" mnemonicParsing="false" onAction="#onEditorCheckBoxAction" text="onMouseLeave" />
+                                                <CheckBox fx:id="onKeyDown" mnemonicParsing="false" onAction="#onEditorCheckBoxAction" text="onKeyDown" />
+                                                <CheckBox fx:id="onKeyUp" mnemonicParsing="false" onAction="#onEditorCheckBoxAction" text="onKeyUp" />
+                                                <CheckBox fx:id="onDidPaste" mnemonicParsing="false" onAction="#onEditorCheckBoxAction" text="onDidPaste" />
+                                                <CheckBox fx:id="onDidScrollChange" mnemonicParsing="false" onAction="#onEditorCheckBoxAction" text="onDidScrollChange" />
+                                                <CheckBox fx:id="onDidLayoutChange" mnemonicParsing="false" onAction="#onEditorCheckBoxAction" text="onDidLayoutChange" />
+                                                <CheckBox fx:id="onGainFocus" mnemonicParsing="false" onAction="#onEditorCheckBoxAction" text="onGainFocus" />
+                                                <CheckBox fx:id="onLostFocus" mnemonicParsing="false" onAction="#onEditorCheckBoxAction" text="onLostFocus" />
+                                                <CheckBox fx:id="onContextMenu" mnemonicParsing="false" onAction="#onEditorCheckBoxAction" text="onContextMenu" />
+                                                <CheckBox fx:id="onDidChangeConfiguration" mnemonicParsing="false" onAction="#onEditorCheckBoxAction" text="onDidChangeConfiguration" />
+                                                <CheckBox fx:id="onDidChangeCursorPosition" mnemonicParsing="false" onAction="#onEditorCheckBoxAction" text="onDidChangeCursorPosition" />
+                                                <CheckBox fx:id="onDidChangeCursorSelection" mnemonicParsing="false" onAction="#onEditorCheckBoxAction" text="onDidChangeCursorSelection" />
+                                                <CheckBox fx:id="onDidChangeModelContent" mnemonicParsing="false" onAction="#onEditorCheckBoxAction" text="onDidChangeModelContent" />
+                                                <CheckBox fx:id="onDidChangeModelLanguage" mnemonicParsing="false" onAction="#onEditorCheckBoxAction" text="onDidChangeModelLanguage" />
+                                                <CheckBox fx:id="onDidChangeModelOptions" mnemonicParsing="false" onAction="#onEditorCheckBoxAction" text="onDidChangeModelOptions" />
+                                                <CheckBox fx:id="onDidContentSizeChange" mnemonicParsing="false" onAction="#onEditorCheckBoxAction" text="onDidContentSizeChange" />
+                                                <CheckBox fx:id="onDidDispose" mnemonicParsing="false" onAction="#onEditorCheckBoxAction" text="onDidDispose" />
+                                             </children>
+                                          </VBox>
+                                       </content>
+                                  </TitledPane>
+                                  <TitledPane animated="false" text="其他" />
+                                </panes>
+                              </Accordion>
+                           </children>
+                        </VBox>
+                        <VBox fx:id="editorPanel" prefHeight="200.0" prefWidth="100.0" />
+                     </items>
+                  </SplitPane>
+               </children>
+            </VBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <TextArea fx:id="outputTextArea" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+         </items>
+      </SplitPane>
+      <BorderPane maxHeight="20.0" minHeight="20.0" prefHeight="20.0" VBox.vgrow="NEVER">
+         <left>
+            <Label fx:id="leftStatusLabel" text="status" textFill="#817e7e" BorderPane.alignment="CENTER">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Label>
+         </left>
+         <center>
+            <Label fx:id="centerStatusLabel" text="status" textFill="#817e7e" BorderPane.alignment="CENTER">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Label>
+         </center>
+         <right>
+            <Label fx:id="rightStatusLabel" text="status" textFill="#817e7e" BorderPane.alignment="CENTER">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Label>
+         </right>
+      </BorderPane>
+  </children>
+</VBox>

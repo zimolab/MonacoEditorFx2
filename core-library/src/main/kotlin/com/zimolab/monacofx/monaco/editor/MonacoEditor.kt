@@ -1070,86 +1070,80 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         } == true
     }
 
-    fun unlisten(eventId: Int) {
+    fun unlisten(eventId: Int): Boolean {
         if (eventId in editorEvents)
             editorEvents.remove(eventId)
-        eventBridge?.unlisten(eventId)
+        return eventBridge?.unlisten(eventId) == true
     }
 
     fun isListened(eventId: Int): Boolean {
         return eventBridge?.isListened(eventId) == true
     }
 
-    fun onMouseDown(listener: ((eventId: Int, event: EditorMouseEvent) -> Unit)?) {
+    fun onMouseDown(listener: ((eventId: Int, event: EditorMouseEvent) -> Unit)?): Boolean {
         if (listener == null) {
-            unlisten(EditorEvents.onMouseDown)
-            return
+            return unlisten(EditorEvents.onMouseDown)
         }
 
-        listen(EditorEvents.onMouseDown) { eventId: Int, e: Any? ->
+        return listen(EditorEvents.onMouseDown) { eventId: Int, e: Any? ->
             if (e is JSObject) {
                 listener(eventId, EditorMouseEvent(e))
             }
         }
     }
 
-    fun onMouseUp(listener: ((eventId: Int, event: EditorMouseEvent) -> Unit)?) {
+    fun onMouseUp(listener: ((eventId: Int, event: EditorMouseEvent) -> Unit)?): Boolean {
         if (listener == null) {
-            unlisten(EditorEvents.onMouseUp)
-            return
+
+            return unlisten(EditorEvents.onMouseUp)
         }
 
-        listen(EditorEvents.onMouseUp) { eventId: Int, e: Any? ->
-            if (e is JSObject) {
-                listener(eventId, EditorMouseEvent(e))
-            }
-        }
-    }
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ///////////////////////////////////////方便使用的事件监听API/////////////////////////////////////////////////////////////////
-    fun onMouseMove(listener: ((eventId: Int, event: EditorMouseEvent) -> Unit)?) {
-        if (listener == null) {
-            unlisten(EditorEvents.onMouseMove)
-            return
-        }
-        listen(EditorEvents.onMouseMove) { eventId: Int, e: Any? ->
+        return listen(EditorEvents.onMouseUp) { eventId: Int, e: Any? ->
             if (e is JSObject) {
                 listener(eventId, EditorMouseEvent(e))
             }
         }
     }
 
-    fun onMouseLeave(listener: ((eventId: Int, event: EditorMouseEvent) -> Unit)?) {
+    fun onMouseMove(listener: ((eventId: Int, event: EditorMouseEvent) -> Unit)?): Boolean {
         if (listener == null) {
-            unlisten(EditorEvents.onMouseLeave)
-            return
+            return unlisten(EditorEvents.onMouseMove)
         }
-        listen(EditorEvents.onMouseLeave) { eventId: Int, e: Any? ->
+        return listen(EditorEvents.onMouseMove) { eventId: Int, e: Any? ->
             if (e is JSObject) {
                 listener(eventId, EditorMouseEvent(e))
             }
         }
     }
 
-    fun onKeyUp(listener: ((eventId: Int, event: KeyBoardEvent) -> Unit)?) {
+    fun onMouseLeave(listener: ((eventId: Int, event: EditorMouseEvent) -> Unit)?): Boolean {
         if (listener == null) {
-            unlisten(EditorEvents.onKeyUp)
-            return
+            return unlisten(EditorEvents.onMouseLeave)
         }
-        listen(EditorEvents.onKeyUp) { eventId: Int, e: Any? ->
+        return listen(EditorEvents.onMouseLeave) { eventId: Int, e: Any? ->
+            if (e is JSObject) {
+                listener(eventId, EditorMouseEvent(e))
+            }
+        }
+    }
+
+    fun onKeyUp(listener: ((eventId: Int, event: KeyBoardEvent) -> Unit)?): Boolean {
+        if (listener == null) {
+            return unlisten(EditorEvents.onKeyUp)
+        }
+        return listen(EditorEvents.onKeyUp) { eventId: Int, e: Any? ->
             if (e is JSObject) {
                 listener(eventId, KeyBoardEvent(e))
             }
         }
     }
 
-    fun onKeyDown(listener: ((eventId: Int, event: KeyBoardEvent) -> Unit)?) {
+    fun onKeyDown(listener: ((eventId: Int, event: KeyBoardEvent) -> Unit)?): Boolean {
         if (listener == null) {
-            unlisten(EditorEvents.onKeyDown)
-            return
+            return unlisten(EditorEvents.onKeyDown)
+
         }
-        listen(EditorEvents.onKeyDown) { eventId: Int, e: Any? ->
+        return listen(EditorEvents.onKeyDown) { eventId: Int, e: Any? ->
             if (e is JSObject) {
                 listener(eventId, KeyBoardEvent(e))
             }
@@ -1168,12 +1162,12 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
-    fun onDidPaste(listener: ((eventId: Int, event: PasteEvent) -> Unit)?) {
+    fun onDidPaste(listener: ((eventId: Int, event: PasteEvent) -> Unit)?): Boolean {
         if (listener == null) {
-            unlisten(EditorEvents.onDidPaste)
-            return
+            return unlisten(EditorEvents.onDidPaste)
+
         }
-        listen(EditorEvents.onDidPaste) { eventId: Int, e: Any? ->
+        return listen(EditorEvents.onDidPaste) { eventId: Int, e: Any? ->
             if (e is JSObject) {
                 listener(eventId, PasteEvent(e))
             }
@@ -1192,30 +1186,36 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         }
     }
 
-    fun onGainFocus(listener: ((eventId: Int) -> Unit)?) {
+    fun onDidFocusEditorWidget(listener: ((eventId: Int, event: Any?) -> Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onDidFocusEditorWidget)
+            return
+        }
+        listen(EditorEvents.onDidFocusEditorWidget, listener)
+    }
+
+    fun onDidFocusEditorText(listener: ((eventId: Int, event: Any?) -> Unit)?) {
+        if (listener == null) {
             unlisten(EditorEvents.onDidFocusEditorText)
             return
         }
-        val callback = { eventId: Int, _: Any? ->
-            listener(eventId)
-        }
-        listen(EditorEvents.onDidFocusEditorText, callback)
-        listen(EditorEvents.onDidFocusEditorWidget, callback)
+        listen(EditorEvents.onDidFocusEditorText, listener)
     }
 
-    fun onLostFocus(listener: ((eventId: Int) -> Unit)?) {
+    fun onDidBlurEditorText(listener: ((eventId: Int, event: Any?) -> Unit)?) {
         if (listener == null) {
             unlisten(EditorEvents.onDidBlurEditorText)
+            return
+        }
+        listen(EditorEvents.onDidBlurEditorText, listener)
+    }
+
+    fun onDidBlurEditorWidget(listener: ((eventId: Int, event: Any?) -> Unit)?) {
+        if (listener == null) {
             unlisten(EditorEvents.onDidBlurEditorWidget)
             return
         }
-        val callback = { eventId: Int, _: Any? ->
-            listener(eventId)
-        }
-        listen(EditorEvents.onDidBlurEditorText, callback)
-        listen(EditorEvents.onDidBlurEditorWidget, callback)
+        listen(EditorEvents.onDidBlurEditorWidget, listener)
     }
 
     fun onContextMenu(listener: ((eventId: Int, event: EditorMouseEvent) -> Unit)?) {

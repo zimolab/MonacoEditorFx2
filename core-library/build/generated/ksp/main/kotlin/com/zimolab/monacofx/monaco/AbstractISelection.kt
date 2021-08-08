@@ -13,7 +13,7 @@ import netscape.javascript.JSObject
  * This class is auto-generated from "com.zimolab.monacofx.monaco.ISelection".It may be overwritten
  * at any time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it with your own
  * implementation.
- * @2021-08-05T00:40:10.613463500
+ * @2021-08-09T01:15:59.225741100
  */
 public abstract class AbstractISelection(
   public override val targetObject: JSObject

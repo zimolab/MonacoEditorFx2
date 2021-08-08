@@ -13,8 +13,8 @@ class EditorMouseEvent(jsObject: JSObject) : AbstractIEditorMouseEvent(jsObject)
         MouseTarget(super.target as JSObject)
     }
 
-    override val event: IMouseEvent
+    override val event: MouseEvent
         get() = _event
-    override val target: IMouseTarget
+    override val target: MouseTarget
         get() = _target
 }

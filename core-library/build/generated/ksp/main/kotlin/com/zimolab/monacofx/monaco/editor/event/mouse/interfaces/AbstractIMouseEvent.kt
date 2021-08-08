@@ -4,6 +4,7 @@ import com.zimolab.jsobject.annotations.JsInterfaceObject
 import javafx.scene.web.WebEngine
 import kotlin.Any
 import kotlin.Boolean
+import kotlin.Double
 import kotlin.Int
 import kotlin.String
 import kotlin.Unit
@@ -15,7 +16,7 @@ import netscape.javascript.JSObject
  * "com.zimolab.monacofx.monaco.editor.event.mouse.interfaces.IMouseEvent".It may be overwritten at any
  * time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it with your own
  * implementation.
- * @2021-08-05T00:40:10.791493600
+ * @2021-08-09T01:15:59.333752200
  */
 public abstract class AbstractIMouseEvent(
   public override val targetObject: JSObject
@@ -124,12 +125,12 @@ public abstract class AbstractIMouseEvent(
       return result as Boolean
     }
 
-  public override val timestamp: Int
+  public override val timestamp: Double
     get() {
       val result = targetObject.getMember("timestamp")
       if(result == "undefined" || result == null)
           throw RuntimeException("'timestamp' not exists in underlying js object")
-      return result as Int
+      return result as Double
     }
 
   public open fun exists(name: String): Boolean = targetObject.getMember(name) != "undefined"
