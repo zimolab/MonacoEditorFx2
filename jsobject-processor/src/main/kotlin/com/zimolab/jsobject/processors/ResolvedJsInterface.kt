@@ -65,7 +65,7 @@ class ResolvedJsInterface(
     }
 
     val generateNewInstanceFunction: Boolean by lazy {
-        interfaceAnnotation.findArgument(JsInterface::newFunction.name, JsInterface.NEW_INSTANCE_FUNCTION)
+        interfaceAnnotation.findArgument(JsInterface::newInstanceFunction.name, JsInterface.NEW_INSTANCE_FUNCTION)
     }
 
     fun setOutputClassNameRule(prefix: String, suffix: String) {
