@@ -14,7 +14,7 @@ import netscape.javascript.JSObject
  * "com.zimolab.monacofx.monaco.editor.IScrolledVisiblePosition".It may be overwritten at any time,
  * every change to it will be lost. DO NOT MODIFY IT. Just inherit from it with your own
  * implementation.
- * @2021-08-09T01:36:24.681544400
+ * @2021-08-10T01:53:24.203814400
  */
 public abstract class AbstractIScrolledVisiblePosition(
   public override val targetObject: JSObject
