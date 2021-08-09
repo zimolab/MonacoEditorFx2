@@ -43,94 +43,6 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         val ERROR_UNEXPECTED_RETURN_VALUE = Throwable("JS invoke did not return a value as expected")
     }
 
-    object JS {
-        const val CREATE = "create"
-        const val IS_READY = "isReady"
-        const val GET_LANGUAGES = "getLanguages"
-        const val GET_OPTIONS = "getOptions"
-        const val GET_OPTION = "getOption"
-        const val ADD_ACTION = "addAction"
-        const val REMOVE_ACTION = "removeAction"
-        const val ADD_COMMAND = "addCommand"
-        const val UPDATE_OPTIONS = "updateOptions"
-        const val FOCUS = "focus"
-        const val AUTO_LAYOUT = "autoLayout"
-        const val SET_TEXT = "setText"
-        const val GET_TEXT = "getText"
-        const val GET_CURRENT_LANGUAGE = "getCurrentLanguage"
-        const val SET_CURRENT_LANGUAGE = "setCurrentLanguage"
-        const val SET_SCROLL_LEFT = "setScrollLeft"
-        const val SET_SCROLL_TOP = "setScrollTop"
-        const val SET_SCROLL_POSITION = "setScrollPosition"
-        const val SET_SCROLL_POSITION_XY = "setScrollPositionXY"
-        const val GET_ACTION = "getAction"
-        const val GET_CONTENT_HEIGHT = "getContentHeight"
-        const val GET_CONTENT_WIDTH = "getContentWidth"
-        const val GET_LAYOUT_INFO = "getLayoutInfo"
-        const val GET_LINE_DECORATIONS = "getLineDecorations"
-        const val GET_OFFSET_FOR_COLUMN = "getOffsetForColumn"
-        const val GET_SCROLL_HEIGHT = "getScrollHeight"
-        const val GET_SCROLL_LEFT = "getScrollLeft"
-        const val GET_SCROLL_TOP = "getScrollTop"
-        const val GET_SCROLL_WIDTH = "getScrollWidth"
-        const val GET_SCROLLED_VISIBLE_POSITION = "getScrolledVisiblePosition"
-        const val GET_SELECTION = "getSelection"
-        const val GET_SELECTIONS = "getSelections"
-        const val GET_SUPPORTED_ACTIONS = "getSupportedActions"
-        const val GET_TARGET_AT_CLIENT_POINT = "getTargetAtClientPoint"
-        const val GET_TOP_FOR_LINE_NUMBER = "getTopForLineNumber"
-        const val GET_TOP_FOR_POSITION = "getTopForPosition"
-        const val GET_VALUE = "getValue"
-        const val GET_VISIBLE_COLUMN_FROM_POSITION = "getVisibleColumnFromPosition"
-        const val GET_VISIBLE_RANGES = "getVisibleRanges"
-        const val HAS_TEXT_FOCUS = "hasTextFocus"
-        const val HAS_WIDGET_FOCUS = "hasWidgetFocus"
-        const val LAYOUT_CONTENT_WIDGET = "layoutContentWidget"
-        const val LAYOUT_OVERLAY_WIDGET = "layoutOverlayWidget"
-        const val POP_UNDO_STOP = "popUndoStop"
-        const val PUSH_UNDO_STOP = "pushUndoStop"
-        const val RENDER = "render"
-        const val RESTORE_VIEW_STATE = "restoreViewState"
-        const val SAVE_VIEW_STATE = "saveViewState"
-
-        const val REVEAL_LINE = "revealLine"
-        const val REVEAL_LINE_IN_CENTER = "revealLineInCenter"
-        const val REVEAL_LINE_IN_CENTER_IF_OUTSIDE_VIEWPORT = "revealLineInCenterIfOutsideViewport"
-        const val REVEAL_LINE_NEAR_TOP = "revealLineNearTop"
-
-        const val REVEAL_LINES = "revealLines"
-        const val REVEAL_LINES_IN_CENTER = "revealLinesInCenter"
-        const val REVEAL_LINES_IN_CENTER_IF_OUTSIDE_VIEWPORT = "revealLinesInCenterIfOutsideViewport"
-        const val REVEAL_LINES_NEAR_TOP = "revealLinesNearTop"
-
-        const val REVEAL_POSITION = "revealPosition"
-        const val REVEAL_POSITION_IN_CENTER = "revealPositionInCenter"
-        const val REVEAL_POSITION_IN_CENTER_IF_OUTSIDE_VIEWPORT = "revealPositionInCenterIfOutsideViewport"
-        const val REVEAL_POSITION_NEAR_TOP = "revealPositionNearTop"
-
-        const val REVEAL_RANGE = "revealRange"
-        const val REVEAL_RANGE_AT_TOP = "revealRangeAtTop"
-        const val REVEAL_RANGE_IN_CENTER = "revealRangeInCenter"
-        const val REVEAL_RANGE_IN_CENTER_IF_OUTSIDE_VIEWPORT = "revealRangeInCenterIfOutsideViewport"
-        const val REVEAL_RANGE_NEAR_TOP_IF_OUTSIDE_VIEWPORT = "revealRangeNearTopIfOutsideViewport"
-
-        const val SET_POSITION = "setPosition"
-        const val SET_SELECTION = "setSelection"
-        const val SET_SELECTIONS = "setSelections"
-        const val SET_VALUE = "setValue"
-        const val TRIGGER = "trigger"
-        const val EXECUTE_EDITS = "executeEdits"
-        const val GET_MODEL = "getTextModel"
-        const val DISPOSE = "dispose"
-        const val SET_THEME = "setTheme"
-        const val GET_THEME = "getTheme"
-        const val GET_BUILTIN_THEMES = "getBuiltinThemes"
-        const val DEFINE_THEME = "defineTheme"
-        const val LISTEN = "listen"
-        const val UNLISTEN = "unlisten"
-        const val IS_LISTENED = "isListened"
-    }
-
     private var jsEditor: JSObject? = null
     private val addedActions: MutableMap<String, IActionDescriptor> by lazy { mutableMapOf() }
     private val addedCommands: MutableMap<String, ICommandHandler> by lazy { mutableMapOf() }
@@ -177,7 +89,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
     }
 
     fun isReady(): Boolean {
-        return invoke(JS.IS_READY) == true
+        return invoke(JsAPIs.Editor.IS_READY) == true
     }
 
     /**
@@ -186,10 +98,10 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Boolean
      */
     fun create(createOptions: IStandaloneEditorConstructionOptions?): Boolean {
-        val result = execute("$JS_EDITOR.${JS.CREATE}(${JSON.toJSONString(createOptions)})") == true
+        val result = execute("$JS_EDITOR.${JsAPIs.Editor.CREATE}(${JSON.toJSONString(createOptions)})") == true
         if (result) {
             // 注意：此处只能使用execute()，不能使用invoke()，因为此时onJsEditorReady()尚未回调，因此jsEditor现在为null
-            val jsModel = execute("$JS_EDITOR.${JS.GET_MODEL}()")
+            val jsModel = execute("$JS_EDITOR.${JsAPIs.Editor.GET_MODEL}()")
             if (jsModel is JSObject) {
                 textModel = TextModel(jsModel, this)
             } else {
@@ -203,7 +115,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * 自动重新布局
      */
     fun autoLayout(): Boolean {
-        return invoke(JS.AUTO_LAYOUT) == true
+        return invoke(JsAPIs.Editor.AUTO_LAYOUT) == true
     }
 
     /**
@@ -211,7 +123,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return CodeEditorViewState?
      */
     fun saveViewState(): CodeEditorViewState? {
-        return when (val r = invoke(JS.SAVE_VIEW_STATE)) {
+        return when (val r = invoke(JsAPIs.Editor.SAVE_VIEW_STATE)) {
             is JSObject -> CodeEditorViewState(r)
             else -> null
         }
@@ -223,7 +135,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Boolean
      */
     fun restoreViewState(state: CodeEditorViewState): Boolean {
-        return invoke(JS.RESTORE_VIEW_STATE, state.targetObject) == true
+        return invoke(JsAPIs.Editor.RESTORE_VIEW_STATE, state.targetObject) == true
     }
 
     /**
@@ -231,7 +143,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Boolean
      */
     fun hasWidgetFocus(): Boolean {
-        return invoke(JS.HAS_WIDGET_FOCUS) == true
+        return invoke(JsAPIs.Editor.HAS_WIDGET_FOCUS) == true
     }
 
     /**
@@ -239,7 +151,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Boolean
      */
     fun hasTextFocus(): Boolean {
-        return invoke(JS.HAS_TEXT_FOCUS) == true
+        return invoke(JsAPIs.Editor.HAS_TEXT_FOCUS) == true
     }
 
     /**
@@ -247,7 +159,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Int?
      */
     fun getContentWidth(): Int? {
-        return invoke(JS.GET_CONTENT_WIDTH) as? Int
+        return invoke(JsAPIs.Editor.GET_CONTENT_WIDTH) as? Int
     }
 
     /**
@@ -255,7 +167,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Int?
      */
     fun getContentHeight(): Int? {
-        return invoke(JS.GET_CONTENT_HEIGHT) as? Int
+        return invoke(JsAPIs.Editor.GET_CONTENT_HEIGHT) as? Int
     }
 
     /**
@@ -267,7 +179,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         if (jsEditor == null || descriptor.id in addedActions.keys)
             return false
         val descriptorJson = JSON.toJSONString(descriptor)
-        return execute("$JS_EDITOR.${JS.ADD_ACTION}($descriptorJson)")?.let { executeReturn ->
+        return execute("$JS_EDITOR.${JsAPIs.Editor.ADD_ACTION}($descriptorJson)")?.let { executeReturn ->
             if (executeReturn == true) {
                 this.addedActions[descriptor.id] = descriptor
                 true
@@ -359,7 +271,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Boolean
      */
     fun removeAction(actionId: String): Boolean {
-        return invoke(JS.REMOVE_ACTION, actionId)?.let { invokeReturn ->
+        return invoke(JsAPIs.Editor.REMOVE_ACTION, actionId)?.let { invokeReturn ->
             if (invokeReturn == true) {
                 if (actionId in addedActions) {
                     addedActions.remove(actionId)
@@ -387,9 +299,9 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      */
     fun addCommand(keybinding: Int, handler: ICommandHandler, context: String?): Boolean {
         val result = if (context == null) {
-            invoke(JS.ADD_COMMAND, keybinding, handler.id)
+            invoke(JsAPIs.Editor.ADD_COMMAND, keybinding, handler.id)
         } else {
-            invoke(JS.ADD_COMMAND, keybinding, handler.id, context)
+            invoke(JsAPIs.Editor.ADD_COMMAND, keybinding, handler.id, context)
         }
         if (result == true) {
             addedCommands[handler.id] = handler
@@ -401,7 +313,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
     fun updateOptions(newOptions: IStandaloneEditorConstructionOptions): Boolean {
         if (jsEditor == null)
             return false
-        return execute("$JS_EDITOR.${JS.UPDATE_OPTIONS}(${JSON.toJSONString(newOptions)})") == true
+        return execute("$JS_EDITOR.${JsAPIs.Editor.UPDATE_OPTIONS}(${JSON.toJSONString(newOptions)})") == true
     }
 
     /**
@@ -409,7 +321,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return String?
      */
     fun getText(): String? {
-        return invoke(JS.GET_TEXT)?.let { invokeReturn ->
+        return invoke(JsAPIs.Editor.GET_TEXT)?.let { invokeReturn ->
             if (invokeReturn is String)
                 invokeReturn
             else
@@ -423,21 +335,21 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Boolean
      */
     fun setText(text: String): Boolean {
-        return invoke(JS.SET_TEXT, text) == true
+        return invoke(JsAPIs.Editor.SET_TEXT, text) == true
     }
 
     /**
      * 将焦点设置到编辑器上
      * @return Boolean
      */
-    fun focus(): Boolean = invoke(JS.FOCUS) == true
+    fun focus(): Boolean = invoke(JsAPIs.Editor.FOCUS) == true
 
     /**
      *
      * @return Boolean
      */
     fun pushUndoStop(): Boolean {
-        return invoke(JS.PUSH_UNDO_STOP) == true
+        return invoke(JsAPIs.Editor.PUSH_UNDO_STOP) == true
     }
 
     /**
@@ -445,7 +357,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Boolean
      */
     fun popUndoStop(): Boolean {
-        return invoke(JS.POP_UNDO_STOP) == true
+        return invoke(JsAPIs.Editor.POP_UNDO_STOP) == true
     }
 
     /**
@@ -453,7 +365,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return EditorLayoutInfo?
      */
     fun getLayoutInfo(): EditorLayoutInfo? {
-        return when (val r = invoke(JS.GET_LAYOUT_INFO)) {
+        return when (val r = invoke(JsAPIs.Editor.GET_LAYOUT_INFO)) {
             is JSObject -> EditorLayoutInfo(r)
             else -> null
         }
@@ -466,7 +378,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Int?
      */
     fun getOffsetForColumn(lineNumber: Int, column: Int): Int? {
-        return when (val r = invoke(JS.GET_OFFSET_FOR_COLUMN)) {
+        return when (val r = invoke(JsAPIs.Editor.GET_OFFSET_FOR_COLUMN)) {
             is Int -> r
             else -> null
         }
@@ -478,7 +390,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Boolean
      */
     fun render(forceRedraw: Boolean): Boolean {
-        return invoke(JS.RENDER, forceRedraw) == true
+        return invoke(JsAPIs.Editor.RENDER, forceRedraw) == true
     }
 
     /**
@@ -488,7 +400,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return MouseTarget?
      */
     fun getTargetAtClientPoint(clientX: Int, clientY: Int): MouseTarget? {
-        return when (val r = invoke(JS.GET_TARGET_AT_CLIENT_POINT)) {
+        return when (val r = invoke(JsAPIs.Editor.GET_TARGET_AT_CLIENT_POINT)) {
             is JSObject -> MouseTarget(r)
             else -> null
         }
@@ -501,9 +413,9 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      */
     fun getScrolledVisiblePosition(position: IPosition): Position? {
         return if (position is JsInterfaceObject) {
-            invoke(JS.GET_SCROLLED_VISIBLE_POSITION, position.targetObject)
+            invoke(JsAPIs.Editor.GET_SCROLLED_VISIBLE_POSITION, position.targetObject)
         } else {
-            execute("$JS_EDITOR.${JS.GET_SCROLLED_VISIBLE_POSITION}(${JSON.toJSONString(position)})")
+            execute("$JS_EDITOR.${JsAPIs.Editor.GET_SCROLLED_VISIBLE_POSITION}(${JSON.toJSONString(position)})")
         }?.let {
             if (it is JSObject)
                 Position(it)
@@ -517,7 +429,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return JsArray?
      */
     fun getVisibleRanges(): JsArray? {
-        return when (val r = invoke(JS.GET_VISIBLE_RANGES)) {
+        return when (val r = invoke(JsAPIs.Editor.GET_VISIBLE_RANGES)) {
             is JSObject -> JsArray(r)
             else -> null
         }
@@ -529,7 +441,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Int?
      */
     fun getTopForLineNumber(lineNumber: Int): Int? {
-        return when (val r = invoke(JS.GET_TOP_FOR_LINE_NUMBER, lineNumber)) {
+        return when (val r = invoke(JsAPIs.Editor.GET_TOP_FOR_LINE_NUMBER, lineNumber)) {
             is Int -> r
             else -> null
         }
@@ -542,7 +454,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Int?
      */
     fun getTopForPosition(lineNumber: Int, column: Int): Int? {
-        return when (val r = invoke(JS.GET_TOP_FOR_POSITION, lineNumber, column)) {
+        return when (val r = invoke(JsAPIs.Editor.GET_TOP_FOR_POSITION, lineNumber, column)) {
             is Int -> r
             else -> null
         }
@@ -553,7 +465,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return IComputedEditorOptions?
      */
     fun getOptions(): IComputedEditorOptions? {
-        return invoke(JS.GET_OPTIONS)?.let { invokeReturn ->
+        return invoke(JsAPIs.Editor.GET_OPTIONS)?.let { invokeReturn ->
             ensureJSONObject(invokeReturn) { jsonObj ->
                 ensureJSONArray(IComputedEditorOptions.KEY, jsonObj) { jsArray ->
                     IComputedEditorOptions(jsArray)
@@ -568,7 +480,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return EditorAction
      */
     fun getAction(id: String): EditorAction? {
-        return invoke(JS.GET_ACTION, id)?.let { invokeReturn ->
+        return invoke(JsAPIs.Editor.GET_ACTION, id)?.let { invokeReturn ->
             if (invokeReturn is JSObject)
                 EditorAction(invokeReturn)
             else
@@ -582,7 +494,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return T?
      */
     inline fun <reified T> getOption(id: Int): T? {
-        return invoke(JS.GET_OPTION, id)?.let { invokeReturn ->
+        return invoke(JsAPIs.Editor.GET_OPTION, id)?.let { invokeReturn ->
             ensureTypeT<T>(invokeReturn) {
                 JSONObject.parseObject(it as String, T::class.java)
             }
@@ -594,7 +506,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return String?
      */
     fun getCurrentLanguage(): String? {
-        return invoke(JS.GET_CURRENT_LANGUAGE)?.let { invokeReturn ->
+        return invoke(JsAPIs.Editor.GET_CURRENT_LANGUAGE)?.let { invokeReturn ->
             if (invokeReturn is String)
                 invokeReturn
             else
@@ -607,7 +519,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Boolean
      */
     fun setCurrentLanguage(language: String): Boolean {
-        return invoke(JS.SET_CURRENT_LANGUAGE, language) == true
+        return invoke(JsAPIs.Editor.SET_CURRENT_LANGUAGE, language) == true
     }
 
     /**
@@ -615,7 +527,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return List<ILanguageExtensionPoint>?
      */
     fun getLanguages(): List<ILanguageExtensionPoint>? {
-        return invoke(JS.GET_LANGUAGES)?.let { invokeReturn ->
+        return invoke(JsAPIs.Editor.GET_LANGUAGES)?.let { invokeReturn ->
             ensureString(invokeReturn) { str ->
                 ensureTypeT<List<ILanguageExtensionPoint>>(str) {
                     val l = JSON.parseArray(it as String, ILanguageExtensionPoint::class.java)
@@ -633,9 +545,9 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      */
     fun setScrollLeft(newScrollLeft: Int, scrollType: Int?): Boolean {
         return if (scrollType == null) {
-            invoke(JS.SET_SCROLL_LEFT, newScrollLeft)
+            invoke(JsAPIs.Editor.SET_SCROLL_LEFT, newScrollLeft)
         } else {
-            invoke(JS.SET_SCROLL_LEFT, newScrollLeft, scrollType)
+            invoke(JsAPIs.Editor.SET_SCROLL_LEFT, newScrollLeft, scrollType)
         } == true
     }
 
@@ -647,9 +559,9 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      */
     fun setScrollTop(newScrollTop: Int, scrollType: Int?): Boolean {
         return if (scrollType == null) {
-            invoke(JS.SET_SCROLL_TOP, newScrollTop)
+            invoke(JsAPIs.Editor.SET_SCROLL_TOP, newScrollTop)
         } else {
-            invoke(JS.SET_SCROLL_TOP, newScrollTop, scrollType)
+            invoke(JsAPIs.Editor.SET_SCROLL_TOP, newScrollTop, scrollType)
         } == true
     }
 
@@ -660,7 +572,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Boolean
      */
     fun setScrollPosition(position: INewScrollPosition, scrollType: Int?): Boolean {
-        return execute("$JS_EDITOR.${JS.SET_SCROLL_POSITION}(${JSON.toJSONString(position)}, $scrollType)") == true
+        return execute("$JS_EDITOR.${JsAPIs.Editor.SET_SCROLL_POSITION}(${JSON.toJSONString(position)}, $scrollType)") == true
     }
 
     /**
@@ -672,9 +584,9 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      */
     fun setScrollPositionXY(positionLeft: Int, positionTop: Int, scrollType: Int?): Boolean {
         return if (scrollType == null) {
-            invoke(JS.SET_SCROLL_POSITION_XY, positionLeft, positionTop)
+            invoke(JsAPIs.Editor.SET_SCROLL_POSITION_XY, positionLeft, positionTop)
         } else {
-            invoke(JS.SET_SCROLL_POSITION_XY, positionLeft, positionTop, scrollType)
+            invoke(JsAPIs.Editor.SET_SCROLL_POSITION_XY, positionLeft, positionTop, scrollType)
         } == true
     }
 
@@ -683,7 +595,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Int?
      */
     fun getScrollWidth(): Int? {
-        return when (val r = invoke(JS.GET_SCROLL_WIDTH)) {
+        return when (val r = invoke(JsAPIs.Editor.GET_SCROLL_WIDTH)) {
             is Int -> r
             else -> null
         }
@@ -694,7 +606,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Int?
      */
     fun getScrollLeft(): Int? {
-        return when (val r = invoke(JS.GET_SCROLL_LEFT)) {
+        return when (val r = invoke(JsAPIs.Editor.GET_SCROLL_LEFT)) {
             is Int -> r
             else -> null
         }
@@ -705,7 +617,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Int?
      */
     fun getScrollHeight(): Int? {
-        return when (val r = invoke(JS.GET_SCROLL_HEIGHT)) {
+        return when (val r = invoke(JsAPIs.Editor.GET_SCROLL_HEIGHT)) {
             is Int -> r
             else -> null
         }
@@ -716,7 +628,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Int?
      */
     fun getScrollTop(): Int? {
-        return when (val r = invoke(JS.GET_SCROLL_TOP)) {
+        return when (val r = invoke(JsAPIs.Editor.GET_SCROLL_TOP)) {
             is Int -> r
             else -> null
         }
@@ -728,7 +640,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Boolean
      */
     fun setSelections(selections: Array<ISelection>): Boolean {
-        return execute("$JS_EDITOR.${JS.SET_SELECTIONS}(${JSON.toJSONString(selections)})") == true
+        return execute("$JS_EDITOR.${JsAPIs.Editor.SET_SELECTIONS}(${JSON.toJSONString(selections)})") == true
     }
 
     /**
@@ -737,7 +649,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Boolean
      */
     fun setSelections(selections: JsArray): Boolean {
-        return invoke(JS.SET_SELECTIONS, selections.source) == true
+        return invoke(JsAPIs.Editor.SET_SELECTIONS, selections.source) == true
     }
 
     /**
@@ -747,9 +659,9 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      */
     fun setSelection(selection: IRange): Boolean {
         return if (selection is JsInterfaceObject) {
-            invoke(JS.SET_SELECTION, selection.targetObject) == true
+            invoke(JsAPIs.Editor.SET_SELECTION, selection.targetObject) == true
         } else {
-            execute("$JS_EDITOR.${JS.SET_SELECTION}(${json(selection)})") == true
+            execute("$JS_EDITOR.${JsAPIs.Editor.SET_SELECTION}(${json(selection)})") == true
         }
     }
 
@@ -760,17 +672,17 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      */
     fun setSelection(selection: ISelection): Boolean {
         return if (selection is JsInterfaceObject) {
-            invoke(JS.SET_SELECTION, selection.targetObject) == true
+            invoke(JsAPIs.Editor.SET_SELECTION, selection.targetObject) == true
         } else {
-            execute("$JS_EDITOR.${JS.SET_SELECTION}(${json(selection)})") == true
+            execute("$JS_EDITOR.${JsAPIs.Editor.SET_SELECTION}(${json(selection)})") == true
         }
     }
 
     fun getVisibleColumnFromPosition(position: IPosition) {
         if (position is JsInterfaceObject) {
-            invoke(JS.GET_VISIBLE_COLUMN_FROM_POSITION, position.targetObject)
+            invoke(JsAPIs.Editor.GET_VISIBLE_COLUMN_FROM_POSITION, position.targetObject)
         } else {
-            execute("$JS_EDITOR.${JS.GET_VISIBLE_COLUMN_FROM_POSITION}(${json(position)})")
+            execute("$JS_EDITOR.${JsAPIs.Editor.GET_VISIBLE_COLUMN_FROM_POSITION}(${json(position)})")
         }
     }
 
@@ -779,7 +691,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Selection?
      */
     fun getSelection(): Selection? {
-        return invoke(JS.GET_SELECTION)?.let {
+        return invoke(JsAPIs.Editor.GET_SELECTION)?.let {
             if (it is JSObject)
                 Selection(it)
             else
@@ -788,7 +700,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
     }
 
     fun getSelections(): JsArray? {
-        return invoke(JS.GET_SELECTIONS)?.let {
+        return invoke(JsAPIs.Editor.GET_SELECTIONS)?.let {
             if (it is JSObject)
                 JsArray(it)
             else
@@ -803,7 +715,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      * @return Boolean
      */
     fun setPosition(column: Int, lineNumber: Int): Boolean {
-        return execute("$JS_EDITOR.${JS.SET_POSITION}({column: $column, lineNumber: $lineNumber})") == true
+        return execute("$JS_EDITOR.${JsAPIs.Editor.SET_POSITION}({column: $column, lineNumber: $lineNumber})") == true
     }
 
     /**
@@ -813,9 +725,9 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      */
     fun setPosition(position: IPosition): Boolean {
         return if (position is JsInterfaceObject) {
-            invoke(JS.SET_SELECTION, position.targetObject) == true
+            invoke(JsAPIs.Editor.SET_SELECTION, position.targetObject) == true
         } else {
-            execute("$JS_EDITOR.${JS.SET_POSITION}(${json(position)})") == true
+            execute("$JS_EDITOR.${JsAPIs.Editor.SET_POSITION}(${json(position)})") == true
         }
     }
 
@@ -832,22 +744,22 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         endCursorState: Array<ISelection>?
     ): Boolean {
         return if (endCursorState == null) {
-            execute(JS.EXECUTE_EDITS.format(source, JSON.toJSONString(edits), "undefined"))
+            execute(JsAPIs.Editor.EXECUTE_EDITS.format(source, JSON.toJSONString(edits), "undefined"))
         } else {
-            execute(JS.EXECUTE_EDITS.format(source, JSON.toJSONString(edits), JSON.toJSONString(endCursorState)))
+            execute(JsAPIs.Editor.EXECUTE_EDITS.format(source, JSON.toJSONString(edits), JSON.toJSONString(endCursorState)))
         } == true
     }
 
     fun revealLine(revealPosition: RevealPosition, lineNumber: Int, scrollType: Int): Boolean {
         return when (revealPosition) {
-            RevealPosition.Default -> invoke(JS.REVEAL_LINE, lineNumber, scrollType) == true
-            RevealPosition.InCenter -> invoke(JS.REVEAL_LINE_IN_CENTER, lineNumber, scrollType) == true
+            RevealPosition.Default -> invoke(JsAPIs.Editor.REVEAL_LINE, lineNumber, scrollType) == true
+            RevealPosition.InCenter -> invoke(JsAPIs.Editor.REVEAL_LINE_IN_CENTER, lineNumber, scrollType) == true
             RevealPosition.InCenterIfOutsideViewport -> invoke(
-                JS.REVEAL_LINE_IN_CENTER_IF_OUTSIDE_VIEWPORT,
+                JsAPIs.Editor.REVEAL_LINE_IN_CENTER_IF_OUTSIDE_VIEWPORT,
                 lineNumber,
                 scrollType
             ) == true
-            RevealPosition.NearTop -> invoke(JS.REVEAL_LINE_NEAR_TOP, lineNumber, scrollType) == true
+            RevealPosition.NearTop -> invoke(JsAPIs.Editor.REVEAL_LINE_NEAR_TOP, lineNumber, scrollType) == true
             else -> false
         }
     }
@@ -860,10 +772,10 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         scrollType: Int
     ): Boolean {
         val js = when (revealPosition) {
-            RevealPosition.Default -> JS.REVEAL_LINES
-            RevealPosition.InCenter -> JS.REVEAL_LINES_IN_CENTER
-            RevealPosition.InCenterIfOutsideViewport -> JS.REVEAL_LINES_IN_CENTER_IF_OUTSIDE_VIEWPORT
-            RevealPosition.NearTop -> JS.REVEAL_LINES_NEAR_TOP
+            RevealPosition.Default -> JsAPIs.Editor.REVEAL_LINES
+            RevealPosition.InCenter -> JsAPIs.Editor.REVEAL_LINES_IN_CENTER
+            RevealPosition.InCenterIfOutsideViewport -> JsAPIs.Editor.REVEAL_LINES_IN_CENTER_IF_OUTSIDE_VIEWPORT
+            RevealPosition.NearTop -> JsAPIs.Editor.REVEAL_LINES_NEAR_TOP
             else ->
                 return false
         }
@@ -872,10 +784,10 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
 
     fun revealPosition(revealPosition: RevealPosition, position: IPosition, scrollType: Int): Boolean {
         val js = when (revealPosition) {
-            RevealPosition.Default -> JS.REVEAL_POSITION
-            RevealPosition.InCenter -> JS.REVEAL_POSITION_IN_CENTER
-            RevealPosition.InCenterIfOutsideViewport -> JS.REVEAL_POSITION_IN_CENTER_IF_OUTSIDE_VIEWPORT
-            RevealPosition.NearTop -> JS.REVEAL_POSITION_NEAR_TOP
+            RevealPosition.Default -> JsAPIs.Editor.REVEAL_POSITION
+            RevealPosition.InCenter -> JsAPIs.Editor.REVEAL_POSITION_IN_CENTER
+            RevealPosition.InCenterIfOutsideViewport -> JsAPIs.Editor.REVEAL_POSITION_IN_CENTER_IF_OUTSIDE_VIEWPORT
+            RevealPosition.NearTop -> JsAPIs.Editor.REVEAL_POSITION_NEAR_TOP
             else ->
                 return false
         }
@@ -888,11 +800,11 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
 
     fun revealRange(revealPosition: RevealPosition, range: IRange, scrollType: Int): Boolean {
         val js = when (revealPosition) {
-            RevealPosition.Default -> JS.REVEAL_RANGE
-            RevealPosition.InCenter -> JS.REVEAL_RANGE_IN_CENTER
-            RevealPosition.InCenterIfOutsideViewport -> JS.REVEAL_RANGE_IN_CENTER_IF_OUTSIDE_VIEWPORT
-            RevealPosition.NearTopIfOutsideViewport -> JS.REVEAL_RANGE_NEAR_TOP_IF_OUTSIDE_VIEWPORT
-            RevealPosition.AtTop -> JS.REVEAL_RANGE_AT_TOP
+            RevealPosition.Default -> JsAPIs.Editor.REVEAL_RANGE
+            RevealPosition.InCenter -> JsAPIs.Editor.REVEAL_RANGE_IN_CENTER
+            RevealPosition.InCenterIfOutsideViewport -> JsAPIs.Editor.REVEAL_RANGE_IN_CENTER_IF_OUTSIDE_VIEWPORT
+            RevealPosition.NearTopIfOutsideViewport -> JsAPIs.Editor.REVEAL_RANGE_NEAR_TOP_IF_OUTSIDE_VIEWPORT
+            RevealPosition.AtTop -> JsAPIs.Editor.REVEAL_RANGE_AT_TOP
             else ->
                 return false
         }
@@ -911,21 +823,21 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
      */
     fun trigger(source: String?, handlerId: String, payload: Any?): Boolean {
         return (if (payload == null)
-            invoke(JS.TRIGGER, source, handlerId)
+            invoke(JsAPIs.Editor.TRIGGER, source, handlerId)
         else
-            invoke(JS.TRIGGER, source, handlerId, payload)) == true
+            invoke(JsAPIs.Editor.TRIGGER, source, handlerId, payload)) == true
     }
 
     fun setTheme(themeName: String): Boolean {
-        return invoke(JS.SET_THEME, themeName) == true
+        return invoke(JsAPIs.Editor.SET_THEME, themeName) == true
     }
 
     fun getTheme(): String? {
-        return invoke(JS.GET_THEME) as? String
+        return invoke(JsAPIs.Editor.GET_THEME) as? String
     }
 
     fun getBuiltinThemes(): JsArray? {
-        return invoke(JS.GET_BUILTIN_THEMES)?.let {
+        return invoke(JsAPIs.Editor.GET_BUILTIN_THEMES)?.let {
             if (it is JSObject)
                 JsArray(it)
             else
@@ -934,7 +846,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
     }
 
     fun defineTheme(themeName: String, themeData: IStandaloneThemeData): Boolean {
-        return execute("""$JS_EDITOR.${JS.DEFINE_THEME}("$themeName", ${JSON.toJSONString(themeData)})""") == true
+        return execute("""$JS_EDITOR.${JsAPIs.Editor.DEFINE_THEME}("$themeName", ${JSON.toJSONString(themeData)})""") == true
     }
 
     fun dispose(): Boolean {
@@ -946,7 +858,7 @@ class MonacoEditor(val webEngine: WebEngine, val monacoFx: MonacoEditorFx) : JsB
         editorEvents.forEach { (eventId, _) ->
             eventBridge?.unlisten(eventId)
         }
-        return invoke(JS.DISPOSE) == true
+        return invoke(JsAPIs.Editor.DISPOSE) == true
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
