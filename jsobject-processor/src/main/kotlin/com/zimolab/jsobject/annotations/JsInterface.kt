@@ -7,11 +7,11 @@ annotation class JsInterface(
     val outputClassName: String = "",
     val outputFilename: String = "",
     val ignoreUnsupportedTypes: Boolean = IGNORE_UNSUPPORTED_TYPES,
-    val newFunction: Boolean = NEW_INSTANCE_FUNCTION
+    val newInstanceFunction: Boolean = NEW_INSTANCE_FUNCTION
 ) {
 
     companion object {
-        const val NEW_INSTANCE_FUNCTION = true
+        const val NEW_INSTANCE_FUNCTION = false
         const val IGNORE_UNSUPPORTED_TYPES = true
     }
 }

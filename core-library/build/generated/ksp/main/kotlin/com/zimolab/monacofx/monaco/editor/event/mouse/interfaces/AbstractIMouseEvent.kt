@@ -1,14 +1,12 @@
 package com.zimolab.monacofx.monaco.editor.event.mouse.interfaces
 
 import com.zimolab.jsobject.annotations.JsInterfaceObject
-import javafx.scene.web.WebEngine
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Double
 import kotlin.Int
 import kotlin.String
 import kotlin.Unit
-import kotlin.reflect.KFunction
 import netscape.javascript.JSObject
 
 /**
@@ -16,7 +14,7 @@ import netscape.javascript.JSObject
  * "com.zimolab.monacofx.monaco.editor.event.mouse.interfaces.IMouseEvent".It may be overwritten at any
  * time, every change to it will be lost. DO NOT MODIFY IT. Just inherit from it with your own
  * implementation.
- * @2021-08-10T01:53:24.327831600
+ * @2021-08-10T02:37:57.337586
  */
 public abstract class AbstractIMouseEvent(
   public override val targetObject: JSObject
@@ -149,26 +147,5 @@ public abstract class AbstractIMouseEvent(
     return result as Unit
   }
 
-  public companion object {
-    public inline fun <reified T : IMouseEvent> new(
-      webEngine: WebEngine,
-      jsCode: String,
-      vararg args: Any
-    ): T? {
-      val clz = T::class
-      if (clz.isAbstract)
-          throw InstantiationError("abstract class can not be instantiated")
-      var c:KFunction<*>? = null
-      clz.constructors.forEach {
-          if (it.parameters.size == (args.size + 2))
-              c = it
-      }
-      if(c == null)
-          throw InstantiationError("constructor parameters not match")
-      val targetObject = webEngine.executeScript(jsCode)
-      if(targetObject == "undefined" || targetObject !is JSObject)
-          return null
-      return c?.call(targetObject as JSObject, webEngine, *args) as? T
-    }
-  }
+  public companion object
 }
